@@ -1,0 +1,23 @@
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap-vue/src/index.scss';
+.btn-uport {
+    background-color: #5b50ca;
+    color: white;
+    transition: background-color 0.5s;
+}
+
+.btn-uport:hover {
+    background-color: #3228a1;
+    color: white;
+}
+
+.btn-metamask {
+    background-color: #F8911E;
+    color: white;
+    transition: background-color 0.5s;
+}
+
+.btn-metamask:hover {
+    background-color: rgb(218, 111, 5);
+    color: white;
+}
