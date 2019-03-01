@@ -24,8 +24,8 @@ export default {
       try {
         this.loading = true
         await this.$store.dispatch('auth/METAMASK_CONNECT')
+        this.$store.commit('auth/AUTH_TYPE', 'metamask')
         this.loading = false
-        this.$router.push('/dashboard')
       } catch (e) {
         this.$root.$emit('alert', {
           countdown: 5,

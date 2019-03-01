@@ -24,8 +24,8 @@ export default {
       try {
         this.loading = true
         await this.$store.dispatch('auth/UPORT_LOGIN', this.network)
+        this.$store.commit('auth/AUTH_TYPE', 'uport')
         this.loading = false
-        this.$router.push('/dashboard')
       } catch (e) {
         this.$root.$emit('alert', {
           countdown: 5,

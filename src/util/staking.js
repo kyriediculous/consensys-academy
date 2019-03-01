@@ -22,7 +22,7 @@ export async function staked (user) {
     const staking = new Contract(
       Staking.networks[network].address,
       Staking.abi,
-      provider.getSigner()
+      provider
     )
     return utils.formatEther(await staking.stakes(user))
   } catch (e) {
@@ -45,8 +45,10 @@ export async function stake (amount) {
         Staking.abi,
         provider.getSigner()
       )
-      await token.approve(staking.address, utils.parseEther(amount.toString()))
-      await staking.stake(utils.parseEther(amount.toString()))
+      let tx = await token.approve(staking.address, utils.parseEther(amount.toString()))
+      await provider.waitForTransaction(tx.hash)
+      tx  = await staking.stake(utils.parseEther(amount.toString()))
+      await provider.waitForTransaction(tx.hash)
     } else {
       throw new Error('No injected web3 found')
     }
@@ -59,7 +61,7 @@ export async function stake (amount) {
 export async function unstake (amount) {
   try {
     if (typeof window.web3 !== undefined) {
-      const provider = new providers.Web3Provider(window.web3.currentProvider)
+      const provider = new providers.Web3Provider(window.ethereum)
       const network = (await provider.getNetwork()).chainId
       const staking = new Contract(
         Staking.networks[network].address,

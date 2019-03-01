@@ -137,9 +137,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "/**\r\n * @title Pausable\r\n * @dev Base contract which allows children to implement an emergency stop mechanism.\r\n */\r\npragma solidity ^0.5.1;\r\n\r\nimport './Ownable.sol';\r\n\r\ncontract Pausable is Ownable {\r\n    event Paused(address account);\r\n    event Unpaused(address account);\r\n\r\n    bool private _paused;\r\n\r\n    constructor () internal {\r\n        _paused = false;\r\n    }\r\n\r\n    /**\r\n     * @return true if the contract is paused, false otherwise.\r\n     */\r\n    function paused() public view returns (bool) {\r\n        return _paused;\r\n    }\r\n\r\n    /**\r\n     * @dev Modifier to make a function callable only when the contract is not paused.\r\n     */\r\n    modifier whenNotPaused() {\r\n        require(!_paused);\r\n        _;\r\n    }\r\n\r\n    /**\r\n     * @dev Modifier to make a function callable only when the contract is paused.\r\n     */\r\n    modifier whenPaused() {\r\n        require(_paused);\r\n        _;\r\n    }\r\n\r\n    /**\r\n     * @dev called by the owner to pause, triggers stopped state\r\n     */\r\n    function pause() public onlyOwner whenNotPaused {\r\n        _paused = true;\r\n        emit Paused(msg.sender);\r\n    }\r\n\r\n    /**\r\n     * @dev called by the owner to unpause, returns to normal state\r\n     */\r\n    function unpause() public onlyOwner whenPaused {\r\n        _paused = false;\r\n        emit Unpaused(msg.sender);\r\n    }\r\n}",
-  "sourcePath": "C:\\Users\\Nico\\Desktop\\academy-project\\contracts\\util\\Pausable.sol",
+  "sourcePath": "C:\\Users\\N.vergauwen\\Desktop\\consensys-academy\\contracts\\util\\Pausable.sol",
   "ast": {
-    "absolutePath": "/C/Users/Nico/Desktop/academy-project/contracts/util/Pausable.sol",
+    "absolutePath": "/C/Users/N.vergauwen/Desktop/consensys-academy/contracts/util/Pausable.sol",
     "exportedSymbols": {
       "Pausable": [
         1320
@@ -160,7 +160,7 @@
         "src": "117:23:6"
       },
       {
-        "absolutePath": "/C/Users/Nico/Desktop/academy-project/contracts/util/Ownable.sol",
+        "absolutePath": "/C/Users/N.vergauwen/Desktop/consensys-academy/contracts/util/Ownable.sol",
         "file": "./Ownable.sol",
         "id": 1240,
         "nodeType": "ImportDirective",
@@ -1056,7 +1056,7 @@
     "src": "117:1210:6"
   },
   "legacyAST": {
-    "absolutePath": "/C/Users/Nico/Desktop/academy-project/contracts/util/Pausable.sol",
+    "absolutePath": "/C/Users/N.vergauwen/Desktop/consensys-academy/contracts/util/Pausable.sol",
     "exportedSymbols": {
       "Pausable": [
         1320
@@ -1077,7 +1077,7 @@
         "src": "117:23:6"
       },
       {
-        "absolutePath": "/C/Users/Nico/Desktop/academy-project/contracts/util/Ownable.sol",
+        "absolutePath": "/C/Users/N.vergauwen/Desktop/consensys-academy/contracts/util/Ownable.sol",
         "file": "./Ownable.sol",
         "id": 1240,
         "nodeType": "ImportDirective",
@@ -1977,8 +1977,8 @@
     "version": "0.5.1+commit.c8a2cb62.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.0.2",
-  "updatedAt": "2019-02-24T14:30:10.023Z",
+  "schemaVersion": "3.0.1",
+  "updatedAt": "2019-02-27T23:59:18.121Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

@@ -19,7 +19,7 @@
                 </div>
             </b-col>
         </b-row>
-        <b-table 
+        <b-table
             hover
             show-empty
             :items="listings"
@@ -37,10 +37,20 @@
                     <strong>No listings found...</strong>
                 </div>
              </template>
-             <template slot="status" slot-scope="row">
-
+             <template slot="image" slot-scope="row">
+               <img :src="row.item.image" height="30" width="20" />
              </template>
-             <template slot="price" slot-scope="row"></template>
+             <template slot="id" slot-scope="row" >
+               <div v-b-tooltip.hover :title="row.value">
+                 <a :href="row.item.manifest" target="_blank">{{ row.value.substring(0, 8) + '...' }} </a>
+               </div>
+             </template>
+             <template slot="active" slot-scope="row">
+               {{ row.value === true ? 'Active' : 'Inactive' }}
+             </template>
+             <template slot="price" slot-scope="row">
+               {{ parseInt(row.value).toFixed(3) }}<strong>{{row.item.token.symbol}}</strong>
+             </template>
              <template slot="actions" slot-scope="row">
                  <b-button variant="primary" size="sm" @click="openEdit" >
                      Edit
@@ -57,6 +67,7 @@
                 search: null,
                 loading: true,
                 fields: [
+                    { key: 'image', label: 'Cover' },
                     { key: 'title', label: "Title" },
                     { key: 'id', label: "Id" },
                     { key: 'active', label: "Status" },
@@ -67,11 +78,16 @@
         },
         computed: {
             listings () {
-                return []
+                return this.$store.getters['marketplace/USER_LISTINGS']
             }
         },
-        created () {
-
+        async created () {
+          if (this.$store.state.marketplace.myListings.length === 0 ) {
+            await this.$store.dispatch('marketplace/USER_LISTINGS')
+          } else {
+            this.$store.dispatch('marketplace/USER_LISTINGS')
+          }
+          this.loading = false
         },
         methods: {
             openEdit () {

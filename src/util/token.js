@@ -10,7 +10,8 @@ export async function approve (to, amount) {
       Token.abi,
       provider.getSigner()
     )
-    await token.approve(to, utils.parseEther(amount.toString()))
+    let tx = await token.approve(to, utils.parseEther(amount.toString()))
+    await provider.waitForTransaction(tx.hash)
   } catch (e) {
     throw new Error(e.message)
   }
@@ -52,6 +53,6 @@ export async function info (address = undefined) {
       decimals
     }
   } catch (e) {
-    throw new Error(e.message)
+    throw Error(e.message)
   }
 }

@@ -15,7 +15,7 @@ export const someFunction = (state, payload) => {
 export const UPORT_LOGIN = (state, payload) => {
   state.address = payload.did.split(':')[2]
   state.credentials = payload
-  state.loggedIn = true 
+  state.loggedIn = true
 }
 
 export const UPORT_LOGOUT = state => {
@@ -25,5 +25,9 @@ export const UPORT_LOGOUT = state => {
 export const METAMASK_CONNECT = (state, payload) => {
   state.credentials = {}
   state.address = payload[0]
-  state.loggedIn = true 
+  state.loggedIn = true
+}
+
+export const AUTH_TYPE = (state, payload) => {
+  state.type = payload
 }

@@ -25,6 +25,8 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
+const HDWalletProvider = require('truffle-hdwallet-provider');
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -42,6 +44,12 @@ module.exports = {
       host: 'localhost',
       port: '7545',
       network_id: '5777'
+    },
+    ethOps: {
+      provider: _ => new HDWalletProvider('lava kid panther inject erode hero intact siege student ensure install forest', "http://localhost:8545"),
+      gasPrice: '0',
+      network_id: '6660001',
+      gasLimit: 8000000
     }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.

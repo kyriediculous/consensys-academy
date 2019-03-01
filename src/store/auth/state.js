@@ -1,5 +1,6 @@
 export default {
   credentials: undefined,
   address: undefined,
-  loggedIn: false
+  loggedIn: false,
+  type: ''
 }
