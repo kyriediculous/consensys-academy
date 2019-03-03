@@ -10,13 +10,16 @@ The flow is somewhat similar to the marketplace user stories in the assignment d
 
 ### Marketplace 
 When a user opens up the app he will see the marketplace and can browse listings, the user does not have to authenticate with uport or enable metamask.
+![marketplace](https://github.com/kyriediculous/consensys-academy/blob/master/readme-assets/marketplace.PNG)
 
 ### Buying Listings 
 Listings have the option to pay with either uport or metamask. When the user clicks the buy button the respective transaction approval process will start.
 For uport this means approving the transaction on the mobile app, for metamask a transaction popup will appear (if the user has metamask privacy settings enabled, metamask will first ask authorization to access the user's account).
+![listing details](https://github.com/kyriediculous/consensys-academy/blob/master/readme-assets/listing.PNG)
 
 ### Dashboard 
 The dashboard is the 'profile page' of the user. When a user navigates to this page a modal will pop up to connect to the dApp with either uport or metamask. After connecting the user dashboard will appear. If the user cancels the modal he will be returned to the marketplace. On the dashboard the user can see a purchase history, stake tokens to gain seller permissions (or unstake tokens if the user does not wish to sell items any longer), view and edit his/her listings and create new listings. 
+![connect](https://github.com/kyriediculous/consensys-academy/blob/master/readme-assets/connect.PNG)
 
 ### Creating Listings 
 A user can create new listings from the dashboard. In order to be able to create listings a user must stake a certain amount of tokens. The token and minimum staking amount is decided by the deployer of Marketplace.sol. 
@@ -24,6 +27,7 @@ A user can create new listings from the dashboard. In order to be able to create
 ### Staking 
 Staking tokens is required to gain permissions to create and have purchasable listings. A user can add or remove staked tokens in his dashboard. 
 If a user has active listings while unstaking his tokens, his listings will no longer be purchasable. 
+![dashboard](https://github.com/kyriediculous/consensys-academy/blob/master/readme-assets/dashboard.PNG)
 
 ### Differences from marketplace in assignment
 * There is no store admin that dictates who get to create listings (or a storefront). 
