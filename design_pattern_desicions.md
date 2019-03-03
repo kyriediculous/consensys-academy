@@ -4,14 +4,29 @@
 
 Staking.sol implements a circuit breaker (Pausable.sol) by which the contract owner can pause or unpause staking/unstaking of tokens. 
 
-### Upgradeability through Proxy
+## Upgradeability 
 
-Both Staking.sol and Marketplace.sol are contracts that can live on their own. They can however, also be upgradeable if the contracts are addressed through their proxies.
-The proxies will be executed in context of their respective 'master' contracts. The 'master' contracts can be replaced as long as the storage definitions remains identical.
+I have not included upgradeabilitiy in this project as it would be somewhat trivial, since Marketplace.sol is a monolith contract. 
 
-There is however a gas cost tradeoff involved as each transaction will cost slightly more gas, as an extra inter-contract call needs to happen. 
+We could make Marketplace.sol upgradeable through a proxy for example, I have included one in the contracts folder for demonstration purposes.
+In order to implement this we would have to: 
+ * add the following two lines under `/// CONTRACT STATE` in Marketplace.sol so the storage interfaces of the contracts are identical.
+ ```
+   address public owner;
+  address public impl;
+ ```
+ * Change the constructor into a regular function which is then called after deploying the Proxy contract. This can be done in the migrations or through a Factory contract. 
 
-I wrote two blog posts on the concept of upgradeability: 
-- [Proxy](https://hackernoon.com/upgradeable-ethereum-contracts-v2-786d9c18cd9d)
-- [Concern Seperation](https://hackernoon.com/upgradeable-smart-contracts-a7e9aef76fdd)
+I've written two blogposts on upgradeability in the past including code
+* Same architecture as implemented here: https://hackernoon.com/upgradeable-ethereum-contracts-v2-786d9c18cd9d
+* Five types model https://hackernoon.com/upgradeable-smart-contracts-a7e9aef76fdd
+
+## On the double use of the swarm manifest hash as mapping index and id 
+In Marketplace.sol , the swarm manifest hash of a listing is used as the index in the mapping of all listings.
+This form of double referencing is usually frowned upon in programming, for good reason. But there's actually arguments to be made for double referencing when using deterministic content hashes.
+
+The most common pattern used in simple smart contracts is using an incrementing value in the contract's state. 
+This would slightly increase gas costs, altough only marignal since constantinople release. 
+
+The second problem is that method doesn't let us check for existing id's (and thus duplicate content) without the use of loops and arrays. Which is a pattern I try to avoid as much as possible.
 

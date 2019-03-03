@@ -33,7 +33,7 @@
           Details
         </b-button>
         </b-card-body>
-       
+
         <b-card-footer class="my-2 column" footer-bg-variant="white">
           <div class="row pricing my-2 mx-1">
             <strong>Price: </strong> &nbsp; {{ price }} {{ token.symbol }}

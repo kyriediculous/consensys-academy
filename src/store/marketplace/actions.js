@@ -24,10 +24,10 @@ export const ALL_LISTINGS = async ({ commit }) => {
   }
 }
 
-export const USER_PURCHASES = async ({commit, state, rootState}) => {
+export const USER_PURCHASES = async ({ commit, state, rootState }) => {
   try {
     commit('USER_PURCHASES', await purchases(rootState.auth.address))
-  }  catch (e) {
+  } catch (e) {
     throw Error(e.message)
   }
 }

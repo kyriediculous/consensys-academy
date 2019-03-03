@@ -9,7 +9,7 @@ import BootstrapVue from 'bootstrap-vue'
 import '@/assets/_custom.scss'
 
 Vue.use(BootstrapVue)
-Vue.prototype.$moment = moment 
+Vue.prototype.$moment = moment
 
 Vue.config.productionTip = false
 

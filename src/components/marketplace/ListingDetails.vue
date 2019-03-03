@@ -3,7 +3,7 @@
         v-if="listing"
         size="xl"
         class="detail-modal"
-        hide-footer 
+        hide-footer
         v-model="showModal"
     >
           <b-row>
@@ -14,7 +14,7 @@
                     {{ listing.summary }}
                 </div>
                 <div>
-                    <strong>Sold by: </strong> 
+                    <strong>Sold by: </strong>
                     <a :href="`https://rinkeby.etherscan.io/address/${listing.seller}`" target="_blank"> {{ listing.seller }} </a>
                 </div>
                 <div>
@@ -47,27 +47,26 @@
 </template>
 
 <script>
-    export default {
-        name: 'listingDetails',
-        data () {
-            return {
-                showModal: false,
-                loading: false,
-                listing: undefined
-            }
-        },
-        created () {
-            this.$root.$on('listingDetailModal', $event => {
-                this.showModal = true
-              this.listing = this.$store.getters['marketplace/LISTING_DETAILS']($event) 
-            })
-        }
+export default {
+  name: 'listingDetails',
+  data () {
+    return {
+      showModal: false,
+      loading: false,
+      listing: undefined
     }
+  },
+  created () {
+    this.$root.$on('listingDetailModal', $event => {
+      this.showModal = true
+      this.listing = this.$store.getters['marketplace/LISTING_DETAILS']($event)
+    })
+  }
+}
 
 </script>
 
 <style scoped lang="scss">
-
 
 .modal-dialog {
     min-width:1200px !important;
@@ -84,4 +83,3 @@
   height: auto;
 }
 </style>
-

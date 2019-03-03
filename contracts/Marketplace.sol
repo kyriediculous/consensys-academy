@@ -89,10 +89,10 @@ contract Marketplace is Ownable {
     /// @param _Id the listing id (swarm hash) 
     /// @param _price the new price (leave blank or the same number to only update token)
     /// @param _token the new token (leave blank or the same address to only update price)
-    function changeListingPrice(bytes32 _id, uint 256 _price, address _token) public isSeller(_id) {
-        if (_token != listings[_id].token || _token != address(0)) listings[_id].token = _token; 
+    function changeListingPrice(bytes32 _id, uint256 _price, address _token) public isSeller(_id) {
+        if (_token != address( listings[_id].token) || _token != address(0)) listings[_id].token = IERC20(_token); 
         if ( _price != listings[_id].price && _price > 0 ) listings[_id].price = _price;
-        emit LogChangePrice(_id, listings[_id].price, listings[_id].token);
+        emit LogChangePrice(_id, listings[_id].price, address(listings[_id].token));
     }
 
     /// @notice Get a listing's metadata by its id 

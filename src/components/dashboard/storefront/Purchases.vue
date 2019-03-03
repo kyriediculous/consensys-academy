@@ -8,7 +8,7 @@
             hover
             show-empty
             :items="purchases"
-            :busy="pageLoad" 
+            :busy="pageLoad"
             :fields="fields"
         >
             <div slot="table-busy" class="text-center text-muted my-2">
@@ -38,39 +38,39 @@
 </template>
 
 <script>
-    export default {
-        name: 'purchases',
-        data () {
-            return {
-                pageLoad: true,
-                error: null,
-                fields: [
-                    {key: 'image', label: 'Cover'},
-                    {key: 'title', label: 'Title'},
-                    {key: 'timestamp', label: 'Date'},
-                    {key: 'price', label: 'Price'}
-                ]
-            }
-        },
-        computed: {
-            purchases () {
-                return this.$store.getters['marketplace/USER_PURCHASES']
-            }
-        },
-        async created () {
-            try {
-                if (this.$store.state.marketplace.myPurchases.length === 0) {
-                    await this.$store.dispatch('marketplace/USER_PURCHASES') 
-                } else {
-                    this.$store.dispatch('marketplace/USER_PURCHASES')
-                }
-                this.pageLoad = false 
-            } catch (e) {
-                this.pageLoad = false 
-                this.error = e.message 
-            }
-        }
+export default {
+  name: 'purchases',
+  data () {
+    return {
+      pageLoad: true,
+      error: null,
+      fields: [
+        { key: 'image', label: 'Cover' },
+        { key: 'title', label: 'Title' },
+        { key: 'timestamp', label: 'Date' },
+        { key: 'price', label: 'Price' }
+      ]
     }
+  },
+  computed: {
+    purchases () {
+      return this.$store.getters['marketplace/USER_PURCHASES']
+    }
+  },
+  async created () {
+    try {
+      if (this.$store.state.marketplace.myPurchases.length === 0) {
+        await this.$store.dispatch('marketplace/USER_PURCHASES')
+      } else {
+        this.$store.dispatch('marketplace/USER_PURCHASES')
+      }
+      this.pageLoad = false
+    } catch (e) {
+      this.pageLoad = false
+      this.error = e.message
+    }
+  }
+}
 </script>
 
 <style scoped>

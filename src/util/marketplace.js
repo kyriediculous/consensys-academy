@@ -67,13 +67,13 @@ export const purchases = async (user) => {
     let meta = await Promise.all(logs.map(l => swarm.bzz.download(`${l.listing.substring(2)}/meta`)))
     meta = await Promise.all(meta.map(m => m.text()))
     meta = meta.map(m => JSON.parse(m))
-    let tokens = await Promise.all(logs.map(l=> info(l.token)))
-    logs =  logs.map( (l, i) => {
+    let tokens = await Promise.all(logs.map(l => info(l.token)))
+    logs = logs.map((l, i) => {
       return {
         ...l,
         ...meta[i],
         price: formatEther(l.price),
-        token: {address: l.token, ...tokens[i]},
+        token: { address: l.token, ...tokens[i] },
         image: `${swarm.bzz._url}/bzz:/${l.listing.substring(2)}/image`,
         timestamp: l.timestamp.toString(10)
       }
@@ -96,7 +96,8 @@ export const listingsFor = async (user) => {
       topics: event.encodeTopics([null, user])
     })
     logs = logs.map(l => event.decode(l.data, l.topics))
-    return await Promise.all(logs.map(l => getListing(l.listing)))
+    logs = await Promise.all(logs.map(l => getListing(l.listing)))
+    return user ? logs : logs.filter(l => l.active)
   } catch (e) {
     throw Error(e.message)
   }
@@ -111,13 +112,16 @@ export const getListing = async (id) => {
       Marketplace.abi,
       provider
     )
-    // Fetch swarm hash with bzz-list
-    let meta, ethData
-    [meta, ethData] = await Promise.all([
-      swarm.bzz.download(`${id.substring(2)}/meta`),
-      marketplace.getListing(id)
-    ])
-    meta = JSON.parse(await meta.text())
+
+    let ethData = await marketplace.getListing(id)
+    let meta
+    if (!ethData[0].startsWith('0x0000000000') && ethData[4]) {
+      meta = swarm.bzz.download(`${ethData[0].substring(2)}/meta`)
+      meta = JSON.parse(await meta.text())
+    } else {
+      meta = {}
+    }
+
     return ({
       id: id,
       token: { address: ethData[1], ...await info(ethData[1]) },
@@ -127,9 +131,9 @@ export const getListing = async (id) => {
       title: meta.title,
       summary: meta.summary,
       author: meta.author,
-      image: `${swarm.bzz._url}/bzz:/${id.substring(2)}/image`,
-      ebook: `${swarm.bzz._url}/bzz:/${id.substring(2)}/ebook`,
-      manifest: `${swarm.bzz._url}/bzz-list:/${id.substring(2)}`
+      image: `${swarm.bzz._url}/bzz:/${ethData[0].substring(2)}/image`,
+      ebook: `${swarm.bzz._url}/bzz:/${ethData[0].substring(2)}/ebook`,
+      manifest: `${swarm.bzz._url}/bzz-list:/${ethData[0].substring(2)}`
     })
     // Fetch Smart contract state
   } catch (e) {

@@ -49,14 +49,14 @@ export default {
   async created () {
     try {
       if (!this.$store.state.marketplace.publisherTreshold || !this.$store.state.staking.staked || this.$store.state.staking.token.name === '') {
-              await Promise.all([
-        this.$store.dispatch('staking/TOKEN'),
-        this.$store.dispatch('marketplace/PUBLISHER_TRESHOLD'),
-        this.$store.dispatch('staking/STAKED')
-      ])
+        await Promise.all([
+          this.$store.dispatch('staking/TOKEN'),
+          this.$store.dispatch('marketplace/PUBLISHER_TRESHOLD'),
+          this.$store.dispatch('staking/STAKED')
+        ])
       } else {
-         this.$store.dispatch('staking/TOKEN'),
-        this.$store.dispatch('marketplace/PUBLISHER_TRESHOLD'),
+        this.$store.dispatch('staking/TOKEN')
+        this.$store.dispatch('marketplace/PUBLISHER_TRESHOLD')
         this.$store.dispatch('staking/STAKED')
       }
 

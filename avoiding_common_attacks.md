@@ -1,10 +1,10 @@
-## Avoiding Common Attacks 
+# Avoiding Common Attacks 
 
-### Integer overflow and underflow 
+## Integer overflow and underflow 
 
 All critical arithmetic operations in all contracts are done using the community vetted SafeMath.sol library contract by Open-Zeppelin
 
-### Re-Entrancy 
+## Re-Entrancy 
 
 By using the Checks-Effects-Interactions pattern we can mitigate re-entrancy attacks. 
 
@@ -23,7 +23,7 @@ The unstake function in Staking.sol is a perfect example of this
     }
 ```
 
-### Block gas limit 
+## Block gas limit 
 
 By avoiding the implementation of any loops we significantly reduce the risk of running into block gas limit attacks that can block the contract.
 

@@ -11,7 +11,7 @@ contract Proxy {
   * @notice Fallback function allowing to perform a delegatecall to the given implementation.
   * This function will return whatever the implementation call returns
   */
-  function () public {
+  function () external {
     require(msg.sig != 0x0);
     address _impl = impl;
     assembly {
@@ -26,8 +26,8 @@ contract Proxy {
       default { return(ptr, size) }
     }
   }
-  
-  function upgrade(address _impl) {
+
+  function upgrade(address _impl) external {
     require(msg.sender == owner);
     impl = _impl;
   }
