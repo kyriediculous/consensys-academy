@@ -1,9 +1,14 @@
+const Staking = artifacts.require('Staking')
 const Marketplace = artifacts.require('Marketplace')
 const Token = artifacts.require('Token')
 
 module.exports = deployer => deployer.then(async () => {
     const market = await Marketplace.deployed()
     const token = await Token.deployed() 
+    const staking = await Staking.deployed()
+
+    await token.approve(staking.address, web3.utils.toWei('10', 'ether'))
+    await staking.stake(web3.utils.toWei('10', 'ether'))
 
     // Create Kafka 
     await market.createListing('0x645edeaa2971ca68209ba582d7d39aca0eb029b6da33179699a76c1446b12ffc', token.address, web3.utils.toWei('5', 'ether'), true)
