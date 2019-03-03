@@ -55,14 +55,7 @@ This sounds similar to IPFS, the major difference being that IPFS uses LibP2P as
 
 The web application lives on the public swarm testnet and the content hash is registered on rinkeby ENS. 
 
-## Potential Upgrades 
-
-### Update Listing Manifest 
-I didn't include this out of time constraints on the client side (Fulltime job and next weekend I'll be at ethParis), the functionality is in the contract however.
-A listing owner can update the image, ebook or/and metadata of his listing by removing and adding resources to the existing listing manifest.
-This will return a new 32-byte keccak256 hash of the listing manifest, which can then be set on chain. 
-
-### On the double use of the swarm manifest hash as mapping index and id 
+## On the double use of the swarm manifest hash as mapping index and id 
 In Marketplace.sol , the swarm manifest hash of a listing is used as the index in the mapping of all listings.
 This form of double referencing is usually frowned upon in programming, for good reason. But there's actually arguments to be made for double referencing when using deterministic content hashes.
 
@@ -70,6 +63,13 @@ The most common pattern used in simple smart contracts is using an incrementing 
 This would slightly increase gas costs, altough only marignal since constantinople release. 
 
 The second problem is that method doesn't let us check for existing id's (and thus duplicate content) without the use of loops and arrays. Which is a pattern I try to avoid as much as possible. 
+
+## Potential Upgrades 
+
+### Update Listing Manifest 
+I didn't include this out of time constraints on the client side (Fulltime job and next weekend I'll be at ethParis), the functionality is in the contract however.
+A listing owner can update the image, ebook or/and metadata of his listing by removing and adding resources to the existing listing manifest.
+This will return a new 32-byte keccak256 hash of the listing manifest, which can then be set on chain. 
 
 ### Shopping Cart 
 We could create shopping cart functionality by utilizing batch transactions. 
