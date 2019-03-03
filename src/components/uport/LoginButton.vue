@@ -1,9 +1,11 @@
 <template>
-  <b-button variant="uport" :disabled="loading === true" @click="login" size="lg" class="my-2 mx-1 text-left" type="submit">
+  <div>
+      <b-button variant="uport" :disabled="loading === true" @click="login" size="lg" class="width-100 my-2 mx-1 text-left" type="submit">
     <img src="@/assets/uport-logo.svg" width="50" height="50" class="mx-1" /> &nbsp;|&nbsp;
     <span v-if="loading === false">Connect with uport</span>
     <b-spinner variant="primary" v-if="loading === true" small />
   </b-button>
+  </div>
 </template>
 
 <script>

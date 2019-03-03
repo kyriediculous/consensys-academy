@@ -1,31 +1,8 @@
-/**
- * Use this file to configure your truffle project. It's seeded with some
- * common settings for different networks and features like migrations,
- * compilation and testing. Uncomment the ones you need or modify
- * them to suit your project as necessary.
- *
- * More information about configuration can be found at:
- *
- * truffleframework.com/docs/advanced/configuration
- *
- * To deploy via Infura you'll need a wallet provider (like truffle-hdwallet-provider)
- * to sign your transactions before they're sent to a remote public node. Infura API
- * keys are available for free at: infura.io/register
- *
- * You'll also need a mnemonic - the twelve word phrase the wallet uses to generate
- * public/private key pairs. If you're publishing your code to GitHub make sure you load this
- * phrase from a file you've .gitignored so it doesn't accidentally become public.
- *
- */
-
-// Truffle HDwallet is already provided as a dev package
-// const HDWalletProvider = require('truffle-hdwallet-provider');
-// const infuraKey = "fj4jll3k.....";
-//
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
-
-const HDWalletProvider = require('truffle-hdwallet-provider');
+const HdwalletProvider = require('truffle-hdwallet-provider')
+const mnemonic =
+ 'wild color card special lunar describe abstract project carpet cover end crew'
+const rinkebyRpc =
+ 'https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53'
 
 module.exports = {
   /**
@@ -46,10 +23,14 @@ module.exports = {
       network_id: '5777'
     },
     ethOps: {
-      provider: _ => new HDWalletProvider('lava kid panther inject erode hero intact siege student ensure install forest', "http://localhost:8545"),
+      provider: _ => new HdwalletProvider('lava kid panther inject erode hero intact siege student ensure install forest', 'http://localhost:8545'),
       gasPrice: '0',
       network_id: '6660001',
       gasLimit: 8000000
+    },
+    rinkeby: {
+      provider: () => new HdwalletProvider(mnemonic, rinkebyRpc),
+      network_id: 4
     }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.

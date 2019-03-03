@@ -1,5 +1,5 @@
-import {SwarmClient} from '@erebos/swarm'
+import { SwarmClient } from '@erebos/swarm'
 
 export default new SwarmClient({
-    http: 'http://localhost:8500'
+  http: 'https://swarm-gateways.net'
 })

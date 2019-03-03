@@ -1,5 +1,5 @@
 <template>
-  <div class="col-12 col-lg-4">
+  <div class="col-12 col-lg-6 col-xl-4">
     <b-card
         :title="title"
         :img-src="image"
@@ -9,9 +9,10 @@
         header-bg-variant="primary"
         header-text-variant="white"
         align="left"
-        class="my-3"
+        class="my-2 mx-2"
         >
-        <b-card-text>
+        <b-card-body>
+ <b-card-text>
             <!--<div>
                 <b-badge
                      v-for="(tag, index) in tags"
@@ -22,19 +23,33 @@
                     {{ tag }}
                 </b-badge>
             </div>-->
-            <div>
-                {{summary}}
+            <div class="summary">
+                {{summary.substring(0, 120) + '...'}}
             </div>
             <div>
             </div>
         </b-card-text>
-        <b-button @click="buyListing" variant="primary" class="mx-1">
-            Buy for {{price}} <strong>{{token.symbol}}</strong>
-
-        </b-button>
-        <b-button @click="$router.push(`/marketplace/${id}`)" variant="outline-primary" class="mx-1">
+                <b-button @click="$root.$emit('listingDetailModal', id)" variant="outline-primary" class="mx-1">
           Details
         </b-button>
+        </b-card-body>
+       
+        <b-card-footer class="my-2 column" footer-bg-variant="white">
+          <div class="row pricing my-2 mx-1">
+            <strong>Price: </strong> &nbsp; {{ price }} {{ token.symbol }}
+          </div>
+          <div class="row">
+                              <b-button @click="buyListing('uport')" variant="uport" class="mx-1">
+            <img src="@/assets/uport-logo.svg" width="25" height="25" class="mx-1" /> &nbsp;|&nbsp;
+            Buy
+        </b-button>
+        <b-button @click="buyListing('metamask')" variant="metamask" class="mx-1">
+              <img src="@/assets/metamask.svg" width="25" height="25" class="mx-1" /> &nbsp;|&nbsp;
+            Buy
+        </b-button>
+          </div>
+
+        </b-card-footer>
     </b-card>
   </div>
 </template>
@@ -58,17 +73,17 @@ export default {
     console.log(this.id)
   },
   methods: {
-    async buyListing () {
-      console.log("buying", this.id, this.price )
+    async buyListing (signer) {
+      console.log('buying', this.id, this.price)
       try {
         this.buyLoading = true
-        await buyListing(this.id, this.price, this.authType)
+        await buyListing(this.id, this.price, signer)
         this.$root.$emit('alert', {
           countdown: 5,
           color: 'success',
           message: `Bought ${this.title} for ${this.price} ${this.token.symbol}`
         })
-        setTimeout( () => window.open(this.ebook), 2000)
+        setTimeout(() => window.open(this.ebook), 2000)
         this.buyLoading = false
       } catch (e) {
         this.buyLoading = false
@@ -85,11 +100,37 @@ export default {
 
 <style scoped>
 
-.card  img {
+.card-img-left {
   display: block;
-  max-width:120px;
-  max-height:200px;
+  max-width:200px;
+  max-height:320px;
+  min-height:320px;
   width: auto;
   height: auto;
+}
+
+.pricing {
+  font-size: 18px;
+}
+
+.summary {
+  font-size: 14px;
+}
+
+.card {
+  position: relative;
+}
+.card-body {
+  margin: 0;
+}
+
+.card-title {
+  margin: 0;
+  line-height:21px;
+}
+
+.card-footer {
+  position:absolute;
+  bottom: 0;
 }
 </style>

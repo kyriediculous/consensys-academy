@@ -17,15 +17,14 @@
           <b-nav-item
             href="#"
             @click="$router.push('/dashboard')"
-            v-show="loggedIn === true"
             >Dashboard</b-nav-item
           >
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-text><strong>Network: </strong></b-nav-text>
-         <b-nav-text><strong>Selected account: </strong> {{ address }}</b-nav-text>
+          <b-nav-text class="mx-2"><strong>Network: </strong> Rinkeby </b-nav-text>
+         <b-nav-text class="mx-2"><strong>Selected account: </strong> {{ address }}</b-nav-text>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -51,6 +50,9 @@ export default {
     },
     address () {
       return this.$store.getters['auth/ADDRESS']
+    },
+    network () {
+      return this.$store.getters['network/SELECTED']
     }
   },
   components: {

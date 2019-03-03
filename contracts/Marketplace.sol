@@ -9,8 +9,9 @@ contract Marketplace is Ownable {
     /// EVENTS 
     event LogCreateListing(bytes32 indexed listing, address indexed seller, address token, uint256 price, bool active);
     event LogRemoveListing(bytes32 indexed listing, bytes32 reason);
-    event LogBuy(bytes32 indexed listing, address buyer);
+    event LogBuy(bytes32 indexed listing, address indexed buyer, uint price, address token,  uint timestamp);
     event LogChangeSellerStake(uint256 sellerStake);
+    event LogChangePrice(bytes32 indexed listing, uint256 newPrice, address newToken);
     
     /// MODIFIERS 
     modifier isSeller(bytes32 _listing) {
@@ -84,6 +85,16 @@ contract Marketplace is Ownable {
         listings[_id].active = !listings[_id].active;
     }
 
+    /// @notice Change a listing's price and/or token 
+    /// @param _Id the listing id (swarm hash) 
+    /// @param _price the new price (leave blank or the same number to only update token)
+    /// @param _token the new token (leave blank or the same address to only update price)
+    function changeListingPrice(bytes32 _id, uint 256 _price, address _token) public isSeller(_id) {
+        if (_token != listings[_id].token || _token != address(0)) listings[_id].token = _token; 
+        if ( _price != listings[_id].price && _price > 0 ) listings[_id].price = _price;
+        emit LogChangePrice(_id, listings[_id].price, listings[_id].token);
+    }
+
     /// @notice Get a listing's metadata by its id 
     /// @param _id the swarm hash of the listing 
     /// @return Listing struct as a tuple 
@@ -125,7 +136,7 @@ contract Marketplace is Ownable {
         // Buyer must have approved enough tokens 
         require(IERC20(listings[_id].token).transferFrom(msg.sender, listings[_id].seller, listings[_id].price), "Error: not enough tokens approved");
         // Emit buy event 
-        emit LogBuy(_id, msg.sender);
+        emit LogBuy(_id, msg.sender, listings[_id].price, address(listings[_id].token), now);
     }
     
 }

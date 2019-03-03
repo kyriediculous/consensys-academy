@@ -1,12 +1,31 @@
 <template>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <h1>
-                Marketplace
-                </h1>
-            </div>
+  <div class="container-fluid page-height">
+
+      <div class="row">
+        <div class="col-12 text-center my-5">
+          <h1>Marketplace</h1>
         </div>
+      </div>
+
+      <div v-if="pageLoad" class="row text-center special">
+           <b-spinner variant="primary" class="my-5" />
+         <div>
+           <strong>
+               Loading Marketplace...
+           </strong>
+         </div>
+      </div>
+
+      <div v-else-if="!pageLoad && listings.length === 0" class="container text-center special">
+        <div> :-( </div>
+         <div>
+           <strong>
+               No Listings found...
+           </strong>
+         </div>
+      </div>
+
+    <div v-else>
         <div class="row">
             <div class="col-12">
                 <!-- SEARCH & FILTERS -->
@@ -26,57 +45,35 @@
                         :ebook="listing.ebook"
                     />
                 </b-card-group>
-      <b-modal
-        title="Connect to dApp"
-        v-model="connectModal"
-        centered
-        hide-footer
-        class="text-center"
-        >
-        <div class="d-block">
-          <div>
-              <UportLoginButton @click.native="connectModal = false" class="home-login" v-if="loggedIn === false" />
-          </div>
-          <div>
-             <MetamaskConnect class="home-login" v-if="loggedIn === false" />
-          </div>
-        </div>
-      </b-modal>
     </div>
+
+    <ListingDetails />
+  </div>
 </template>
 
 <script>
-import UportLoginButton from '@/components/uport/LoginButton.vue'
-import MetamaskConnect from '@/components/metamask/MetamaskConnect.vue'
 import ListingCard from '@/components/marketplace/ListingCard.vue'
+import ListingDetails from '@/components/marketplace/ListingDetails.vue'
 export default {
   computed: {
     listings () {
       return this.$store.getters['marketplace/ALL_LISTINGS']
-    },
-    loggedIn () {
-      return this.$store.getters['auth/LOGGED_IN']
-    },
+    }
   },
   data () {
     return {
-      pageLoad: true,
-      connectModal: false
+      pageLoad: true
     }
   },
   async created () {
     try {
-      if ( !this.loggedIn ) {
-        this.connectModal = true
-      }
-      if (this.$store.state.marketplace.listings.length === 0 ) {
+      if (this.$store.state.marketplace.listings.length === 0) {
         await this.$store.dispatch('marketplace/ALL_LISTINGS')
       } else {
         this.$store.dispatch('marketplace/ALL_LISTINGS')
       }
       this.pageLoad = false
     } catch (e) {
-      console.log(e)
       this.$root.$emit('alert', {
         countdown: 5,
         color: 'danger',
@@ -86,14 +83,19 @@ export default {
   },
   components: {
     ListingCard,
-    UportLoginButton,
-    MetamaskConnect
+    ListingDetails
   }
 }
 </script>
 
 <style scoped lang="scss">
-.home-login {
-  width: 350px;
+.page-height {
+  height: calc(100vh - 60px);
+}
+.special {
+  display: flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content: center;
 }
 </style>

@@ -1,23 +1,25 @@
 import Staking from '../../build/contracts/Staking'
-import Token from '../../build/contracts/Token'
+import { approve } from './token'
 import { providers, Contract, utils } from 'ethers'
+import uport from './uport'
 
 const isDeployed = chainId => Staking.networks[chainId] !== undefined
 
 export async function token () {
-  const provider = new providers.Web3Provider(window.ethereum)
+  const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
   const network = (await provider.getNetwork()).chainId
+  if (!isDeployed(network)) throw new Error('contract not deployed')
   const staking = new Contract(
     Staking.networks[network].address,
     Staking.abi,
-    provider.getSigner()
+    provider
   )
-  return await staking.token()
+  return (await staking.token())
 }
 
 export async function staked (user) {
   try {
-    const provider = new providers.Web3Provider(window.ethereum)
+    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
     const network = (await provider.getNetwork()).chainId
     const staking = new Contract(
       Staking.networks[network].address,
@@ -30,27 +32,28 @@ export async function staked (user) {
   }
 }
 
-export async function stake (amount) {
+export async function stake (amount, signer) {
   try {
-    if (typeof window.ethereum !== undefined) {
-      const provider = new providers.Web3Provider(window.ethereum)
-      const network = (await provider.getNetwork()).chainId
-      const token = new Contract(
-        Token.networks[network].address,
-        Token.abi,
-        provider.getSigner()
-      )
-      const staking = new Contract(
-        Staking.networks[network].address,
-        Staking.abi,
-        provider.getSigner()
-      )
-      let tx = await token.approve(staking.address, utils.parseEther(amount.toString()))
-      await provider.waitForTransaction(tx.hash)
-      tx  = await staking.stake(utils.parseEther(amount.toString()))
-      await provider.waitForTransaction(tx.hash)
-    } else {
-      throw new Error('No injected web3 found')
+    let provider, staking
+    switch (signer) {
+      case 'uport':
+        staking = uport.contract(Staking.abi).at(Staking.networks[uport.getProvider().network.id.substring(2)].address)
+        await approve(staking.address, amount, signer)
+        await staking.stake(utils.parseEther(amount.toString()), 'addStake')
+        await uport.onResponse('addStake')
+        break
+      case 'metamask':
+        provider = new providers.Web3Provider(window.ethereum)
+        const network = (await provider.getNetwork()).chainId
+        staking = new Contract(
+          Staking.networks[network].address,
+          Staking.abi,
+          provider.getSigner()
+        )
+        await approve(staking.address, amount, signer)
+        const tx = await staking.stake(utils.parseEther(amount.toString()))
+        await provider.waitForTransaction(tx.hash)
+        break
     }
   } catch (e) {
     console.log(e)
@@ -58,20 +61,26 @@ export async function stake (amount) {
   }
 }
 
-export async function unstake (amount) {
+export async function unstake (amount, signer) {
   try {
-    if (typeof window.web3 !== undefined) {
-      const provider = new providers.Web3Provider(window.ethereum)
-      const network = (await provider.getNetwork()).chainId
-      const staking = new Contract(
-        Staking.networks[network].address,
-        Staking.abi,
-        provider.getSigner(0)
-      )
-      let tx = await staking.unstake(utils.parseEther(amount.toString()))
-      await provider.waitForTransaction(tx.hash)
-    } else {
-      throw new Error('No injected web3 found')
+    let provider, staking
+    switch (signer) {
+      case 'uport':
+        staking = uport.contract(Staking.abi).at(Staking.networks[uport.getProvider().network.id.substring(2)].address)
+        await staking.unstake(utils.parseEther(amount.toString()), 'unStake')
+        await uport.onResponse('unStake')
+        break
+      case 'metamask':
+        provider = new providers.Web3Provider(window.ethereum)
+        const network = (await provider.getNetwork()).chainId
+        staking = new Contract(
+          Staking.networks[network].address,
+          Staking.abi,
+          provider.getSigner()
+        )
+        const tx = await staking.unstake(utils.parseEther(amount.toString()))
+        await provider.waitForTransaction(tx.hash)
+        break
     }
   } catch (e) {
     console.log(e)

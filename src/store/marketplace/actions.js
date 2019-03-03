@@ -1,11 +1,11 @@
-import { treshold, listingsFor } from '@/util/marketplace'
+import { treshold, listingsFor, purchases } from '@/util/marketplace'
 
-export const PUBLISHER_TRESHOLD = async ({commit}) => {
-    try {
-        commit('PUBLISHER_TRESHOLD', await treshold() )
-    } catch (e) {
-        throw Error(e.message)
-    }
+export const PUBLISHER_TRESHOLD = async ({ commit }) => {
+  try {
+    commit('PUBLISHER_TRESHOLD', await treshold())
+  } catch (e) {
+    throw Error(e.message)
+  }
 }
 
 export const USER_LISTINGS = async ({ commit, state, rootState }) => {
@@ -16,10 +16,18 @@ export const USER_LISTINGS = async ({ commit, state, rootState }) => {
   }
 }
 
-export const ALL_LISTINGS = async ({commit}) => {
+export const ALL_LISTINGS = async ({ commit }) => {
   try {
     commit('ALL_LISTINGS', await listingsFor())
   } catch (e) {
+    throw Error(e.message)
+  }
+}
+
+export const USER_PURCHASES = async ({commit, state, rootState}) => {
+  try {
+    commit('USER_PURCHASES', await purchases(rootState.auth.address))
+  }  catch (e) {
     throw Error(e.message)
   }
 }

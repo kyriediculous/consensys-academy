@@ -1,5 +1,6 @@
 export default {
-    publisherTreshold: 0,
-    listings: [],
-    myListings: []
+  publisherTreshold: 0,
+  listings: [],
+  myListings: [],
+  myPurchases: []
 }

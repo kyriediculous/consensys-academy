@@ -1,6 +1,6 @@
 export default {
-  staked: 0,
-  token:  {
+  staked: null,
+  token: {
     name: '',
     address: '',
     symbol: '',

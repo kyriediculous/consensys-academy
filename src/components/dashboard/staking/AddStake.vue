@@ -27,7 +27,7 @@ import { stake } from '@/util/staking'
 export default {
   name: 'staking-add-stake',
   computed: {
-     treshold () {
+    treshold () {
       return this.$store.getters['marketplace/PUBLISHER_TRESHOLD']
     },
     token () {
@@ -44,7 +44,7 @@ export default {
     async addStake () {
       try {
         this.loading = true
-        await stake(10)
+        await stake(10, this.$store.state.auth.type)
         await this.$store.dispatch('staking/STAKED')
         this.loading = false
         this.$root.$emit('alert', {

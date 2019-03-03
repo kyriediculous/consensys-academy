@@ -34,11 +34,13 @@
             </div>
             <template slot="empty" slot-scope="scope">
                 <div class="text-center text-muted my-2">
-                    <strong>No listings found...</strong>
+                    <b-alert :show="typeof error === 'string'" variant="warning" v-html="error">
+                    </b-alert>
+                    <strong v-if="error === false">No listings found...</strong>
                 </div>
              </template>
              <template slot="image" slot-scope="row">
-               <img :src="row.item.image" height="30" width="20" />
+               <img :src="row.item.image" height="32" width="20" />
              </template>
              <template slot="id" slot-scope="row" >
                <div v-b-tooltip.hover :title="row.value">
@@ -61,40 +63,54 @@
 </template>
 
 <script>
-    export default {
-        data () {
-            return {
-                search: null,
-                loading: true,
-                fields: [
-                    { key: 'image', label: 'Cover' },
-                    { key: 'title', label: "Title" },
-                    { key: 'id', label: "Id" },
-                    { key: 'active', label: "Status" },
-                    { key: 'price', label: "Price" },
-                    { key: 'actions', label: '' }
-                ]
-            }
-        },
-        computed: {
-            listings () {
-                return this.$store.getters['marketplace/USER_LISTINGS']
-            }
-        },
-        async created () {
-          if (this.$store.state.marketplace.myListings.length === 0 ) {
-            await this.$store.dispatch('marketplace/USER_LISTINGS')
-          } else {
-            this.$store.dispatch('marketplace/USER_LISTINGS')
-          }
-          this.loading = false
-        },
-        methods: {
-            openEdit () {
-
-            }
-        }
+export default {
+  data () {
+    return {
+      error: false,
+      search: null,
+      loading: true,
+      fields: [
+        { key: 'image', label: 'Cover' },
+        { key: 'title', label: 'Title' },
+        { key: 'id', label: 'Id' },
+        { key: 'active', label: 'Status' },
+        { key: 'price', label: 'Price' },
+        { key: 'actions', label: '' }
+      ]
     }
+  },
+  computed: {
+    listings () {
+      return this.$store.getters['marketplace/USER_LISTINGS']
+    }
+  },
+  async created () {
+    try {
+      if (this.$store.state.marketplace.myListings.length === 0) {
+        await this.$store.dispatch('marketplace/USER_LISTINGS')
+      } else {
+        this.$store.dispatch('marketplace/USER_LISTINGS')
+      }
+      this.loading = false
+    } catch (e) {
+      this.loading = false
+      this.error = e.message
+      switch (e.message) {
+        case 'contract not deployed':
+          this.error = `Staking contract not deployed on the selected network. Please make sure you have the <b> Rinkeby </b> network selected in Metamask`
+          break
+        default:
+          this.error = e.message
+          break
+      }
+    }
+  },
+  methods: {
+    openEdit () {
+
+    }
+  }
+}
 </script>
 
 <style scoped>

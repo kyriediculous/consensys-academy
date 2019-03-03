@@ -116,88 +116,88 @@
 </template>
 
 <script>
-    import { info } from '@/util/token'
-    import { createListing } from '@/util/marketplace'
-    export default {
-        data () {
-            return {
-                modal: false,
-                create: {
-                    ebook: null,
-                    title: '',
-                    summary: '',
-                    author: '',
-                    image: null,
-                    price: null,
-                    token: '0xDd3Fc597324223254d3BA0E333F263e680279245',
-                    activate: false
-                },
-                createLoading: false,
-                tokenInfo: {
-                    name: '',
-                    symbol: '',
-                    decimals: 0,
-                    loading: false,
-                    error: null
-                }
-            }
-        },
-        async created () {
-            this.createLoading = true
-            try {
-              await this.getTokenInfo()
-              this.$root.$on('createListing', $event => this.modal = true)
-              this.createLoading = false
-            } catch (e) {
-              this.$root.$emit('alert', {
-                countdown: 5,
-                color: 'danger',
-                message: e.message
-              })
-              this.createLoading = false
-            }
-        },
-        methods: {
-            async createListing () {
-                try {
-                  await createListing(this.create)
-                  await this.$store.dispatch('marketplace/USER_LISTINGS')
-                } catch (e) {
-                  console.log(e)
-                }
-            },
-            resetForm () {
-                this.create.ebook = null
-                this.create.title = null
-                this.create.summary = null
-                this.create.author = null
-                this.create.image = null
-                this.create.price = null
-                this.create.token = '0x31830869C8ea2C267898b3E2323B5862DE61B9Cc'
-                this.modal = false
-            },
-            async getTokenInfo () {
-                try {
-                    this.tokenInfo.loading = true
-                    this.tokenInfo = {
-                        ...(await info(this.create.token)),
-                        loading: true,
-                        error: null
-                    }
-                    this.tokenInfo.loading = false
-                } catch (e) {
-                    console.log(e)
-                    this.tokenInfo = {
-                        name: '',
-                        symbol: '',
-                        decimals: 0,
-                        loading: false,
-                        error: e.message
-                    }
-                }
-            }
-        }
+import { info } from '@/util/token'
+import { createListing } from '@/util/marketplace'
+export default {
+  data () {
+    return {
+      modal: false,
+      create: {
+        ebook: null,
+        title: '',
+        summary: '',
+        author: '',
+        image: null,
+        price: null,
+        token: '0x69105A42b13CCacE43AF79c9C259d06497d8b0d8',
+        activate: false
+      },
+      createLoading: false,
+      tokenInfo: {
+        name: '',
+        symbol: '',
+        decimals: 0,
+        loading: false,
+        error: null
+      }
     }
+  },
+  async created () {
+    this.createLoading = true
+    try {
+      await this.getTokenInfo()
+      this.$root.$on('createListing', $event => { this.modal = true })
+      this.createLoading = false
+    } catch (e) {
+      this.$root.$emit('alert', {
+        countdown: 5,
+        color: 'danger',
+        message: e.message
+      })
+      this.createLoading = false
+    }
+  },
+  methods: {
+    async createListing () {
+      try {
+        await createListing(this.create, this.$store.state.auth.type)
+        await this.$store.dispatch('marketplace/USER_LISTINGS')
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    resetForm () {
+      this.create.ebook = null
+      this.create.title = null
+      this.create.summary = null
+      this.create.author = null
+      this.create.image = null
+      this.create.price = null
+      this.create.token = '0x31830869C8ea2C267898b3E2323B5862DE61B9Cc'
+      this.modal = false
+    },
+    async getTokenInfo () {
+      try {
+        this.tokenInfo.loading = true
+        this.tokenInfo = {
+          ...(await info(this.create.token)),
+          loading: true,
+          error: null
+        }
+        this.tokenInfo.loading = false
+      } catch (e) {
+        console.log(e)
+        this.tokenInfo = {
+          name: '',
+          symbol: '',
+          decimals: 0,
+          loading: false,
+          error: e.message
+        }
+      }
+    }
+  }
+}
 </script>
 
 <style scoped>

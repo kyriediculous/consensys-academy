@@ -15,20 +15,20 @@
             @ok="unstake"
         >
             <p>
-                Are you sure you want to UNstake {{ staked }} tokens ? 
+                Are you sure you want to UNstake {{ staked }} tokens ?
                 You will not be able to create listings anymore.
-                Your listings will no longer be visible and purchasable. 
+                Your listings will no longer be visible and purchasable.
             </p>
         </b-modal>
     </div>
 </template>
 
 <script>
-  import { unstake } from '@/util/staking'
+import { unstake } from '@/util/staking'
 export default {
   name: 'staking-unstake',
-    computed: {
-     staked () {
+  computed: {
+    staked () {
       return this.$store.getters['staking/STAKED']
     },
     token () {
@@ -42,10 +42,10 @@ export default {
     }
   },
   methods: {
-   async unstake () {
+    async unstake () {
       try {
         this.loading = true
-        await unstake(10)
+        await unstake(10, this.$store.state.auth.type)
         await this.$store.dispatch('staking/STAKED')
         this.loading = false
         this.$root.$emit('alert', {
@@ -54,6 +54,7 @@ export default {
           message: 'Succesfully UNstaked 10 tokens'
         })
       } catch (e) {
+        this.loading = false
         this.$root.$emit('alert', {
           countdown: 5,
           color: 'danger',

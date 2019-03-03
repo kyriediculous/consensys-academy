@@ -1,17 +1,29 @@
 import Token from '../../build/contracts/Token'
 import { providers, Contract, utils } from 'ethers'
+import uport from './uport'
+// const isDeployed = chainId => Token.networks[chainId] !== undefined
 
-export async function approve (to, amount) {
+export async function approve (to, amount, signer) {
   try {
-    const provider = new providers.Web3Provider(window.ethereum)
-    const network = (await provider.getNetwork()).chainId
-    const token = new Contract(
-      Token.networks[network].address,
-      Token.abi,
-      provider.getSigner()
-    )
-    let tx = await token.approve(to, utils.parseEther(amount.toString()))
-    await provider.waitForTransaction(tx.hash)
+    let provider, token
+    switch (signer) {
+      case 'uport':
+        token = uport.contract(Token.abi).at(Token.networks[uport.getProvider().network.id.substring(2)].address)
+        await token.approve(to, utils.parseEther(amount.toString()), 'ERC20approve')
+        await uport.onResponse('ERC20approve')
+        break
+      case 'metamask':
+        provider = new providers.Web3Provider(window.ethereum)
+        const network = (await provider.getNetwork()).chainId
+        token = new Contract(
+          Token.networks[network].address,
+          Token.abi,
+          provider.getSigner()
+        )
+        let tx = await token.approve(to, utils.parseEther(amount.toString()))
+        await provider.waitForTransaction(tx.hash)
+        break
+    }
   } catch (e) {
     throw new Error(e.message)
   }
@@ -19,12 +31,12 @@ export async function approve (to, amount) {
 
 export async function balanceOf (user) {
   try {
-    const provider = new providers.Web3Provider(window.ethereum)
+    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
     const network = (await provider.getNetwork()).chainId
     const token = new Contract(
       Token.networks[network].address,
       Token.abi,
-      provider.getSigner()
+      provider
     )
     return utils.formatEther(await token.balanceOf(user))
   } catch (e) {
@@ -32,17 +44,17 @@ export async function balanceOf (user) {
   }
 }
 
-export async function info (address = undefined) {
+export async function info (address) {
   try {
-    const provider = new providers.Web3Provider(window.ethereum)
+    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
     const network = (await provider.getNetwork()).chainId
     const token = new Contract(
       address || Token.networks[network].address,
       Token.abi,
-      provider.getSigner()
+      provider
     )
     let name, symbol, decimals
-    [name, symbol, decimals] =  await Promise.all([
+    [name, symbol, decimals] = await Promise.all([
       token.name(),
       token.symbol(),
       token.decimals()

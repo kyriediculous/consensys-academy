@@ -13,14 +13,14 @@
 </template>
 
 <script>
-    import MyListings from '@/components/dashboard/storefront/MyListings'
-    import CreateListing from '@/components/dashboard/storefront/CreateListing'
-    export default {
-        components: {
-            MyListings,
-            CreateListing
-        }
-    }
+import MyListings from '@/components/dashboard/storefront/MyListings'
+import CreateListing from '@/components/dashboard/storefront/CreateListing'
+export default {
+  components: {
+    MyListings,
+    CreateListing
+  }
+}
 </script>
 
 <style scoped>

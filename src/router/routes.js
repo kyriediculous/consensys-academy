@@ -27,9 +27,6 @@ export default [
     path: '/dashboard',
     component: () =>
       import(/* webpackChunkName 'layout' */ '@/layouts/default.vue'),
-    meta: {
-      requiresAuth: true
-    },
     children: [
       {
         path: '',

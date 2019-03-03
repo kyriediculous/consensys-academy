@@ -13,7 +13,7 @@
 export default {
   name: 'staking-staked',
   computed: {
-     staked () {
+    staked () {
       return this.$store.getters['staking/STAKED']
     },
     token () {
