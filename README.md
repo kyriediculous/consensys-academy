@@ -109,11 +109,16 @@ I switched back to my favorite ethereum libary, ethers.js, for the remainder of 
 I'm a big fan of the Swarm project as it forms a critical part of the decentralized infrastructure. Despite it's amazing potential it is still in proof-of-concept phase. 
 This means there can be a few quirks here an there. For example, uploading already existing resources to the public swarm gateway will result in a CORS error currently, whereas in previous versions (eg 0.3.8) it returned the existing hash.
 
-## Environment variables 
-ENV Vars can be found in the .env or .env.prod file. 
-If you wish to build for a specific network either on dev server or as a build make sure you change `VUE_APP_NETWORK` to the corresponding network as defined in `@/src/util/networks.js` 
+ 
 
 ## Project setup
+
+###  Environment variables 
+ENV Vars can be found in the `.env` or `.env.prod` file. 
+If you wish to build for a specific network either on dev server or as a build make sure you change `VUE_APP_NETWORK` to the corresponding network as defined in `@/src/util/networks.js` as well as `VUE_APP_SWARM` to your gateway of choice. 
+
+You can also set `VUE_APP_DEFAULT_TOKEN` to the token used in the staking contract, it will then default to that token in the Create Listing form. 
+
 ```
 npm install
 ```
