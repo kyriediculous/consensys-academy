@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-modal
+        centered
           size="xl"
             v-model="modal"
             title="Create New Listing"
@@ -95,7 +96,7 @@
                             </b-button>
                     </b-input-group-append>
                     </b-input-group>
-                    <b-form-input :state="!tokenInfo.error" @change="getTokenInfo" label="token" placeholder="Enter token address..." type="text" required v-model="create.token" />
+                    <b-form-input class="my-2" :state="!tokenInfo.error" @change="getTokenInfo" label="token" placeholder="Enter token address..." type="text" required v-model="create.token" />
                 </b-form-group>
                 <b-form-group
                   id="activate"
@@ -129,7 +130,7 @@ export default {
         author: '',
         image: null,
         price: null,
-        token: '0xD668907d19839dc4472db9EBd641c4a5c773CBa8',
+        token: process.env.VUE_APP_DEFAULT_TOKEN,
         activate: false
       },
       createLoading: false,
@@ -159,11 +160,18 @@ export default {
   },
   methods: {
     async createListing () {
+      this.createLoading = true 
       try {
         await createListing(this.create, this.$store.state.auth.type)
         await this.$store.dispatch('marketplace/USER_LISTINGS')
+        this.createLoading = false 
       } catch (e) {
-        console.log(e)
+        this.createLoading = false 
+        this.$root.$emit('alert', {
+          countdown: 5,
+          color: 'danger',
+          message: e.message
+        })
       }
     },
     resetForm () {

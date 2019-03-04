@@ -44,7 +44,7 @@
              </template>
              <template slot="id" slot-scope="row" >
                <div v-b-tooltip.hover :title="row.value">
-                 <a :href="row.item.manifest" target="_blank">{{ row.value.substring(0, 8) + '...' }} </a>
+                 <a :href="row.item.manifest" target="_blank">{{ row.item.manifestHash.substring(0, 8) + '...' }} </a>
                </div>
              </template>
              <template slot="active" slot-scope="row">

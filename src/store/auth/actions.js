@@ -27,7 +27,6 @@ export const UPORT_LOGIN = async ({ commit }, network) => {
       commit('UPORT_LOGIN', data.payload)
     }
   } catch (e) {
-    console.log(e)
     throw Error(e.message)
   }
 }

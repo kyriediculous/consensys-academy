@@ -43,7 +43,7 @@ contract('Marketplace.sol', () => {
         assert(this.sellerStake.eq(await this.staking.stakes(this.coinbase)), "Not enough tokens staked")
         await this.marketplace.createListing(...this.listing)
         const listing = await this.marketplace.getListing(this.listing[0])
-        assert.equal(this.listing[0], listing.id, "Listing id's do not match")
+        assert.equal(this.listing[0], listing.manifest, "Listing id's do not match")
         assert.equal(this.listing[1], listing.token, "Listing token addresses do not match")
         assert(this.listing[2].eq(listing.price, "Listing prices do not match"))
     })

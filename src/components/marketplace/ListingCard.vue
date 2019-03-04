@@ -39,13 +39,15 @@
             <strong>Price: </strong> &nbsp; {{ price }} {{ token.symbol }}
           </div>
           <div class="row">
-                              <b-button @click="buyListing('uport')" variant="uport" class="mx-1">
+            <b-button :disabled="buyLoading==='uport'" @click="buyListing('uport')" variant="uport" class="mx-1">
             <img src="@/assets/uport-logo.svg" width="25" height="25" class="mx-1" /> &nbsp;|&nbsp;
-            Buy
+            <b-spinner variant="light" v-if="buyLoading === 'uport'" small />
+            <span v-else >Buy</span>
         </b-button>
-        <b-button @click="buyListing('metamask')" variant="metamask" class="mx-1">
+        <b-button :disabled="buyLoading==='metamask'" @click="buyListing('metamask')" variant="metamask" class="mx-1">
               <img src="@/assets/metamask.svg" width="25" height="25" class="mx-1" /> &nbsp;|&nbsp;
-            Buy
+                        <b-spinner variant="light" v-if="buyLoading === 'metamask'" small />
+            <span v-else>Buy</span>
         </b-button>
           </div>
 
@@ -69,14 +71,10 @@ export default {
       return this.$store.state.auth.type
     }
   },
-  created () {
-    console.log(this.id)
-  },
   methods: {
     async buyListing (signer) {
-      console.log('buying', this.id, this.price)
       try {
-        this.buyLoading = true
+        this.buyLoading = signer
         await buyListing(this.id, this.price, signer)
         this.$root.$emit('alert', {
           countdown: 5,

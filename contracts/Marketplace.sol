@@ -7,11 +7,13 @@ import './util/Ownable.sol';
 contract Marketplace is Ownable {
 
     /// EVENTS 
-    event LogCreateListing(bytes32 indexed listing, address indexed seller, address token, uint256 price, bool active);
-    event LogRemoveListing(bytes32 indexed listing, bytes32 reason);
-    event LogBuy(bytes32 indexed listing, address indexed buyer, uint price, address token,  uint timestamp);
-    event LogChangeSellerStake(uint256 sellerStake);
-    event LogChangePrice(bytes32 indexed listing, uint256 newPrice, address newToken);
+    event LogCreateListing(bytes32 indexed listing, address indexed seller, address token, uint256 price, bool active, uint timestamp);
+    event LogRemoveListing(bytes32 indexed listing, bytes32 manifest, bytes32 reason, uint timestamp);
+    event LogBuy(bytes32 indexed listing, address indexed buyer, bytes32 manifest, uint price, address token,  uint timestamp);
+    event LogChangeSellerStake(uint256 sellerStake, uint timestamp);
+    event LogChangePrice(bytes32 indexed listing, uint256 newPrice, address newToken, uint timestamp);
+    event LogChangeManifest(bytes32 indexed listing, bytes32 manifest, uint timestamp);
+    event LogChangeStatus(bytes32 indexed listing, bool active, uint timestamp);
     
     /// MODIFIERS 
     modifier isSeller(bytes32 _listing) {
@@ -21,7 +23,7 @@ contract Marketplace is Ownable {
     
     /// STRUCT DEFINITIONS 
     struct Listing {
-         bytes32 id;        // Swarm hash
+         bytes32 manifest;        // Swarm hash
          IERC20 token;      // Token to accept
          uint256 price;     // Price in wei format 
          address seller;    // Seller 
@@ -53,7 +55,7 @@ contract Marketplace is Ownable {
     /// @dev can only be called by contract owner 
     function changeSellerStake(uint256 _sellerStake) public onlyOwner {
         sellerStake = _sellerStake;
-        emit LogChangeSellerStake(_sellerStake);
+        emit LogChangeSellerStake(_sellerStake, now);
     }
 
     /// @notice Check whether someone has enough tokens staked to be considered a seller 
@@ -72,17 +74,18 @@ contract Marketplace is Ownable {
         // Require that seller has staked enough tokens 
         require(isStakedSeller(msg.sender), "Error: Not enough stake");
         // Require that listing doesn't already exist 
-        require(listings[_id].id == bytes32(0x0), "Error: Listing already exists");
+        require(listings[_id].manifest == bytes32(0x0), "Error: Listing already exists");
         // Create new listing
-        listings [_id ]= Listing(_id, IERC20(_token), _price, msg.sender, _activate);
+        listings[_id ]= Listing(_id, IERC20(_token), _price, msg.sender, _activate);
         // Emit event to compile list of all listings on the client side
-        emit LogCreateListing(_id, msg.sender, _token, _price, _activate);
+        emit LogCreateListing(_id, msg.sender, _token, _price, _activate, now);
     }
     
     /// @notice Change a listing's active status
     /// @param _id the listing id (swarm hash)
     function changeListingStatus(bytes32 _id) public isSeller(_id) {
         listings[_id].active = !listings[_id].active;
+        emit LogChangeStatus(_id, listings[_id].active, now);
     }
 
     /// @notice Change a listing's price and/or token 
@@ -92,7 +95,17 @@ contract Marketplace is Ownable {
     function changeListingPrice(bytes32 _id, uint256 _price, address _token) public isSeller(_id) {
         if (_token != address( listings[_id].token) || _token != address(0)) listings[_id].token = IERC20(_token); 
         if ( _price != listings[_id].price && _price > 0 ) listings[_id].price = _price;
-        emit LogChangePrice(_id, listings[_id].price, address(listings[_id].token));
+        emit LogChangePrice(_id, listings[_id].price, address(listings[_id].token), now);
+    }
+
+    /// @notice Change a listing's manifest 
+    /// @param _id the listing id (original manifest hash)
+    /// @param _manifest the new manifest 
+    function changeListingManifest(bytes32 _id , bytes32 _manifest) public isSeller(_id) {
+        if (_manifest != listings[_id].manifest || _manifest != _id) {
+            listings[_id].manifest = _manifest;
+            emit LogChangeManifest(_id, _manifest, now);
+        }
     }
 
     /// @notice Get a listing's metadata by its id 
@@ -102,14 +115,14 @@ contract Marketplace is Ownable {
         public
         view 
         returns (
-            bytes32 id,
+            bytes32 manifest,
             address token,
             uint256 price,
             address seller,
             bool active
             ) {
         return (
-            _id,
+            listings[_id].manifest,
             address(listings[_id].token),
             listings[_id].price,
             listings[_id].seller,
@@ -122,7 +135,7 @@ contract Marketplace is Ownable {
     /// @param _reason swarm hash with a string containing the reason for removal (optional)
     function removeListing(bytes32 _id, bytes32 _reason) public isSeller(_id) {
         delete listings[_id];
-        emit LogRemoveListing(_id, _reason);
+        emit LogRemoveListing(_id, listings[_id].manifest, _reason, now);
     }
 
     /// @notice Buy a listing 
@@ -136,7 +149,7 @@ contract Marketplace is Ownable {
         // Buyer must have approved enough tokens 
         require(IERC20(listings[_id].token).transferFrom(msg.sender, listings[_id].seller, listings[_id].price), "Error: not enough tokens approved");
         // Emit buy event 
-        emit LogBuy(_id, msg.sender, listings[_id].price, address(listings[_id].token), now);
+        emit LogBuy(_id, msg.sender, listings[_id].manifest, listings[_id].price, address(listings[_id].token), now);
     }
     
 }

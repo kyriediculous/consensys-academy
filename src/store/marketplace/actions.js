@@ -1,4 +1,4 @@
-import { treshold, listingsFor, purchases } from '@/util/marketplace'
+import { treshold, listingsFor, purchases, getListing } from '@/util/marketplace'
 
 export const PUBLISHER_TRESHOLD = async ({ commit }) => {
   try {
@@ -30,4 +30,8 @@ export const USER_PURCHASES = async ({ commit, state, rootState }) => {
   } catch (e) {
     throw Error(e.message)
   }
+}
+
+export const UPDATE_LISTING = async ({ commit }, payload) => {
+  commit('UPDATE_LISTING', await getListing(payload))
 }

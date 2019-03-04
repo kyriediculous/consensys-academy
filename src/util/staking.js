@@ -57,7 +57,6 @@ export async function stake (amount, signer) {
         break
     }
   } catch (e) {
-    console.log(e)
     throw Error(e.message)
   }
 }
@@ -84,7 +83,6 @@ export async function unstake (amount, signer) {
         break
     }
   } catch (e) {
-    console.log(e)
     throw Error(e.message)
   }
 }

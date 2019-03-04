@@ -1,5 +1,6 @@
 <template>
     <b-modal
+        centered
         v-if="listing"
         size="xl"
         class="detail-modal"
@@ -20,7 +21,7 @@
                 <div>
                     <strong>Explore on Swarm: </strong>
                     <a :href="listing.manifest" target="_blank">
-                        {{listing.id.substring(0, 35)+ '...' }}
+                        {{listing.manifestHash.substring(0, 35)+ '...' }}
                     </a>
                 </div>
                 <div class="column my-5 mx-5">
@@ -28,13 +29,15 @@
             <strong>Price: </strong> &nbsp; {{ listing.price }} {{ listing.token.symbol }}
           </div>
           <div class="row">
-                              <b-button @click="buyListing('uport')" variant="uport" class="mx-1">
+                              <b-button :disabled="buyLoading==='uport'" @click="buyListing('uport')" variant="uport" class="mx-1">
             <img src="@/assets/uport-logo.svg" width="40" height="40" class="mx-1" /> &nbsp;|&nbsp;
-            Buy
+                       <b-spinner variant="light" v-if="buyLoading === 'uport'" small />
+            <span v-else >Buy</span>
         </b-button>
-        <b-button @click="buyListing('metamask')" variant="metamask" class="mx-1">
+        <b-button :disabled="buyLoading === 'metamask'" @click="buyListing('metamask')" variant="metamask" class="mx-1">
               <img src="@/assets/metamask.svg" width="40" height="40" class="mx-1" /> &nbsp;|&nbsp;
-            Buy
+                        <b-spinner variant="light" v-if="buyLoading === 'metamask'" small />
+            <span v-else >Buy</span>
         </b-button>
           </div>
                 </div>
@@ -47,13 +50,16 @@
 </template>
 
 <script>
+import { buyListing } from '@/util/marketplace'
+
 export default {
   name: 'listingDetails',
   data () {
     return {
       showModal: false,
       loading: false,
-      listing: undefined
+      listing: undefined,
+      buyLoading: false
     }
   },
   created () {
@@ -61,6 +67,28 @@ export default {
       this.showModal = true
       this.listing = this.$store.getters['marketplace/LISTING_DETAILS']($event)
     })
+  },
+  methods: {
+    async buyListing (signer) {
+      try {
+        this.buyLoading = signer
+        await buyListing(this.listing.id, this.listing.price, signer)
+        this.$root.$emit('alert', {
+          countdown: 5,
+          color: 'success',
+          message: `Bought ${this.listing.title} for ${this.listing.price} ${this.listing.token.symbol}`
+        })
+        setTimeout(() => window.open(this.listing.ebook), 2000)
+        this.buyLoading = false
+      } catch (e) {
+        this.buyLoading = false
+        this.$root.$emit('alert', {
+          countdown: 5,
+          color: 'danger',
+          message: e.message
+        })
+      }
+    }
   }
 }
 

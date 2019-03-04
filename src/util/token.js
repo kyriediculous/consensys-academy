@@ -61,6 +61,7 @@ export async function info (address) {
       token.decimals()
     ])
     return {
+      address,
       name,
       symbol,
       decimals
