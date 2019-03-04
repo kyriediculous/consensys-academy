@@ -1,6 +1,7 @@
 import Token from '../../build/contracts/Token'
 import { providers, Contract, utils } from 'ethers'
 import uport from './uport'
+import networks from './networks'
 // const isDeployed = chainId => Token.networks[chainId] !== undefined
 
 export async function approve (to, amount, signer) {
@@ -31,7 +32,7 @@ export async function approve (to, amount, signer) {
 
 export async function balanceOf (user) {
   try {
-    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
+    const provider = new providers.JsonRpcProvider(networks[process.env.VUE_APP_NETWORK].rpcUrl)
     const network = (await provider.getNetwork()).chainId
     const token = new Contract(
       Token.networks[network].address,
@@ -46,7 +47,7 @@ export async function balanceOf (user) {
 
 export async function info (address) {
   try {
-    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
+    const provider = new providers.JsonRpcProvider(networks[process.env.VUE_APP_NETWORK].rpcUrl)
     const network = (await provider.getNetwork()).chainId
     const token = new Contract(
       address || Token.networks[network].address,

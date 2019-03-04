@@ -129,7 +129,7 @@ export default {
         author: '',
         image: null,
         price: null,
-        token: '0x69105A42b13CCacE43AF79c9C259d06497d8b0d8',
+        token: '0xD668907d19839dc4472db9EBd641c4a5c773CBa8',
         activate: false
       },
       createLoading: false,

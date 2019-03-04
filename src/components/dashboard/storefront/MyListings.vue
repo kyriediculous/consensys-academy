@@ -54,15 +54,17 @@
                {{ parseInt(row.value).toFixed(3) }}<strong>{{row.item.token.symbol}}</strong>
              </template>
              <template slot="actions" slot-scope="row">
-                 <b-button variant="primary" size="sm" @click="openEdit" >
+                 <b-button variant="primary" size="sm" @click="$root.$emit('editListingModal', row.item.id)" >
                      Edit
                  </b-button>
              </template>
         </b-table>
+        <EditListing />
     </b-container>
 </template>
 
 <script>
+import EditListing from './EditListing.vue'
 export default {
   data () {
     return {
@@ -105,10 +107,8 @@ export default {
       }
     }
   },
-  methods: {
-    openEdit () {
-
-    }
+  components: {
+    EditListing
   }
 }
 </script>

@@ -53,7 +53,7 @@ For guarantee of delivery buyers would need to register their (partial) swarm no
 
 From [Swarm official documentation](https://swarm-guide.readthedocs.io/en/latest/introduction.html)
 
-This sounds similar to IPFS, the major difference being that IPFS uses LibP2P as peer-to-peer protocol and Swarm uses Devp2p just like ethereum. It also uses keccak256 as hashing algorithm just like ethereum. This means content hashes are 32 bytes long and can be easily put in a contract without having to base58 encode it first (like with IPFS hashes). Swarm is in an earlier development phase than swarm but offers some interesting features such as messaging (PSS), feeds (mutable resources) and native integration with ethereum under the form of swap, swear and swindle altough there is much uncertainty about the latter two. There's also talks of Ethereum moving to Libp2p as it is actively being developed as THE p2p protocol for the web 3.0. So maybe Swarm might eventually merge with IPFS in the future if ethereum migrates to libp2p, who knows. 
+This sounds similar to IPFS, the major difference being that IPFS uses LibP2P as peer-to-peer protocol and Swarm uses Devp2p just like ethereum. It also uses keccak256 as hashing algorithm just like ethereum. This means content hashes are 32 bytes long and can be easily put in a contract without having to base58 encode it first (like with IPFS hashes). Swarm is in an earlier development phase than IPFS but offers some interesting features such as messaging (PSS), feeds (mutable resources) and native integration with ethereum under the form of swap, swear and swindle altough there is much uncertainty about the latter two. There's also talks of Ethereum moving to Libp2p as it is actively being developed as THE p2p protocol for the web 3.0. So maybe Swarm might eventually merge with IPFS in the future if ethereum migrates to libp2p, who knows. 
 
 ## ENS 
 
@@ -108,6 +108,10 @@ I switched back to my favorite ethereum libary, ethers.js, for the remainder of 
 
 I'm a big fan of the Swarm project as it forms a critical part of the decentralized infrastructure. Despite it's amazing potential it is still in proof-of-concept phase. 
 This means there can be a few quirks here an there. For example, uploading already existing resources to the public swarm gateway will result in a CORS error currently, whereas in previous versions (eg 0.3.8) it returned the existing hash.
+
+## Environment variables 
+ENV Vars can be found in the .env or .env.prod file. 
+If you wish to build for a specific network either on dev server or as a build make sure you change `VUE_APP_NETWORK` to the corresponding network as defined in `@/src/util/networks.js` 
 
 ## Project setup
 ```

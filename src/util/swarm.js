@@ -1,5 +1,5 @@
 import { SwarmClient } from '@erebos/swarm'
 
 export default new SwarmClient({
-  http: 'https://swarm-gateways.net'
+  http: process.env.VUE_APP_SWARM
 })

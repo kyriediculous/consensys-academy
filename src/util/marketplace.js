@@ -2,6 +2,7 @@ import Marketplace from '../../build/contracts/Marketplace'
 import { providers, Contract } from 'ethers'
 import { Interface, parseEther, formatEther } from 'ethers/utils'
 import uport from './uport'
+import networks from './networks'
 
 import swarm from './swarm'
 import { info, approve } from './token'
@@ -38,7 +39,7 @@ export const buyListing = async (id, price, signer) => {
 
 export const treshold = async () => {
   try {
-    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
+    const provider = new providers.JsonRpcProvider(networks[process.env.VUE_APP_NETWORK].rpcUrl)
     const network = (await provider.getNetwork()).chainId
     const marketplace = new Contract(
       Marketplace.networks[network].address,
@@ -53,7 +54,7 @@ export const treshold = async () => {
 
 export const purchases = async (user) => {
   try {
-    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
+    const provider = new providers.JsonRpcProvider(networks[process.env.VUE_APP_NETWORK].rpcUrl)
     const network = (await provider.getNetwork()).chainId
     if (!isDeployed(network)) throw new Error('contract not deployed')
     const event = (new Interface(Marketplace.abi)).events.LogBuy
@@ -84,8 +85,9 @@ export const purchases = async (user) => {
   }
 }
 export const listingsFor = async (user) => {
+  console.log(networks, process.env)
   try {
-    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
+    const provider = new providers.JsonRpcProvider(networks[process.env.VUE_APP_NETWORK].rpcUrl)
     const network = (await provider.getNetwork()).chainId
     if (!isDeployed(network)) throw new Error('contract not deployed')
     const event = (new Interface(Marketplace.abi)).events.LogCreateListing
@@ -105,7 +107,7 @@ export const listingsFor = async (user) => {
 
 export const getListing = async (id) => {
   try {
-    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
+    const provider = new providers.JsonRpcProvider(networks[process.env.VUE_APP_NETWORK].rpcUrl)
     const network = (await provider.getNetwork()).chainId
     const marketplace = new Contract(
       Marketplace.networks[network].address,
@@ -116,7 +118,7 @@ export const getListing = async (id) => {
     let ethData = await marketplace.getListing(id)
     let meta
     if (!ethData[0].startsWith('0x0000000000') && ethData[4]) {
-      meta = swarm.bzz.download(`${ethData[0].substring(2)}/meta`)
+      meta = await swarm.bzz.download(`${ethData[0].substring(2)}/meta`)
       meta = JSON.parse(await meta.text())
     } else {
       meta = {}

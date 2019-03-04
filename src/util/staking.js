@@ -2,11 +2,12 @@ import Staking from '../../build/contracts/Staking'
 import { approve } from './token'
 import { providers, Contract, utils } from 'ethers'
 import uport from './uport'
+import networks from './networks'
 
 const isDeployed = chainId => Staking.networks[chainId] !== undefined
 
 export async function token () {
-  const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
+  const provider = new providers.JsonRpcProvider(networks[process.env.VUE_APP_NETWORK].rpcUrl)
   const network = (await provider.getNetwork()).chainId
   if (!isDeployed(network)) throw new Error('contract not deployed')
   const staking = new Contract(
@@ -19,7 +20,7 @@ export async function token () {
 
 export async function staked (user) {
   try {
-    const provider = new providers.JsonRpcProvider('https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53')
+    const provider = new providers.JsonRpcProvider(networks[process.env.VUE_APP_NETWORK].rpcUrl)
     const network = (await provider.getNetwork()).chainId
     const staking = new Contract(
       Staking.networks[network].address,

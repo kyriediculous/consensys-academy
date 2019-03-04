@@ -30,7 +30,8 @@ module.exports = {
     },
     rinkeby: {
       provider: () => new HdwalletProvider(mnemonic, rinkebyRpc),
-      network_id: 4
+      network_id: 4,
+      skipDryRun: true
     }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
