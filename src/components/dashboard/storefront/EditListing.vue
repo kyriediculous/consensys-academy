@@ -9,7 +9,7 @@
     >
             <div class="my-3">
                 <h4>
-                    Change Status 
+                    Change Status
                 </h4>
               <div class="my-3">
                     <b-button variant="warning" @click="changeStatus" v-if="this.listing.active === true">
@@ -57,12 +57,28 @@
             </div>
             <div>
 
+              <div class="my-5">
+                <h6>Delete Listing</h6>
+                <p style="font-size:11px;">Your listing will only be removed from the current state of the blockchain, it's historical state will still exists as well as the content uploaded to swarm.
+                  Only if the content is not accessed on swarm for a prolongued period of time it might be garbage collected and removed (not implemented yet).
+                  Deleting listings will make the listing not visible anymore in 'Manage your Listings' and it can not be purchased any longer.
+                  In the end it will have the same effect as making the listing inactive minus the visibility in 'Manage your Listings' </p>
+                <b-form class="col-lg-6">
+                  <b-form-input v-model="remove.reason" class="my-2" label="Reason (optional)" placeholder="Enter a reason for removal (optional)" type="text" />
+                  <b-button variant="danger" @click="remove.loading" :disabled="remove.loading">
+                  <span v-if="remove.loading === false">Remove Listing</span>
+                             <b-spinner v-else variant="light" small />
+                  </b-button>
+                </b-form>
+                <b-alert variant="danger" v-if="typeof remove.error === 'string'" class="my-2">{{remove.error}}</b-alert>
+              </div>
             </div>
     </b-modal>
 </template>
 
 <script>
-import { changePricing, changeStatus } from '@/util/marketplace'
+import { changePricing, changeStatus, removeListing } from '@/util/marketplace'
+import { info } from '@/util/token'
 export default {
   name: 'editListing',
   data () {
@@ -78,29 +94,34 @@ export default {
         error: null
       },
       updatePricing: {
-          price: null,
-          token: null,
-          loading: false,
-          error: null
+        price: null,
+        token: null,
+        loading: false,
+        error: null
       },
       updateStatus: {
-          loading: false,
-          error: null
+        loading: false,
+        error: null
+      },
+      remove: {
+        loading: false,
+        error: null,
+        reason: ''
       }
     }
   },
   computed: {
-      listing () {
-          return this.$store.getters['marketplace/LISTING_DETAILS'](this.listingId)
-      }
+    listing () {
+      return this.$store.getters['marketplace/LISTING_DETAILS'](this.listingId)
+    }
   },
   created () {
     this.$root.$on('editListingModal', $event => {
       this.listingId = $event
-        this.showModal = true
-      this.updatePricing.price = this.listing.price 
+      this.showModal = true
+      this.updatePricing.price = this.listing.price
       this.updatePricing.token = this.listing.token.address
-      this.tokenInfo = {...this.listing.token, loading: false, error: null}
+      this.tokenInfo = { ...this.listing.token, loading: false, error: null }
     })
   },
   methods: {
@@ -123,48 +144,65 @@ export default {
         }
       }
     },
-    async changePricing() {
-        try {
-            this.updatePricing.error = null
-            this.updatePricing.loading = true 
-            await changePricing(this.listing.id, updatePricing.price, updatePricing.token, this.$store.state.auth.type)
-            await this.$store.dispatch('marketplace/UPDATE_LISTING', this.listingId)
-            this.updatePricing.loading = false
-                    this.$root.$emit('alert', {
+    async changePricing () {
+      try {
+        this.updatePricing.error = null
+        this.updatePricing.loading = true
+        await changePricing(this.listing.id, this.updatePricing.price, this.updatePricing.token, this.$store.state.auth.type)
+        await this.$store.dispatch('marketplace/UPDATE_LISTING', this.listingId)
+        this.updatePricing.loading = false
+        this.$root.$emit('alert', {
           countdown: 5,
           color: 'success',
           message: `Price updated to ${this.updatePricing.price} ${this.tokenInfo.symbol}`
         })
-        } catch (e) {
-            this.updatePricing.loading = false 
-            this.updatePricing.error = e.message 
+      } catch (e) {
+        this.updatePricing.loading = false
+        this.updatePricing.error = e.message
         this.$root.$emit('alert', {
           countdown: 5,
           color: 'danger',
           message: e.message
         })
-        }
+      }
     },
-    async changeStatus() {
-        try {
-            this.updateStatus.error = null 
-            this.updateStatus.loading = true 
-            await changeStatus(this.listing.id, this.$store.state.auth.type)
-            await this.$store.dispatch('marketplace/UPDATE_LISTING', this.listingId)
-            this.updateStatus.loading = false 
-            this.$root.$emit('alert', {
-                countdown: 5,
-                color: 'success',
-                message: `Listing made ${!this.listing.active ? 'inactive' : 'active'}`
-            })
-        } catch (e) {
-             this.updateStatus.loading = false 
-            this.$root.$emit('alert', {
+    async changeStatus () {
+      try {
+        this.updateStatus.error = null
+        this.updateStatus.loading = true
+        await changeStatus(this.listing.id, this.$store.state.auth.type)
+        await this.$store.dispatch('marketplace/UPDATE_LISTING', this.listingId)
+        this.updateStatus.loading = false
+        this.$root.$emit('alert', {
+          countdown: 5,
+          color: 'success',
+          message: `Listing made ${!this.listing.active ? 'inactive' : 'active'}`
+        })
+      } catch (e) {
+        this.updateStatus.loading = false
+        this.$root.$emit('alert', {
           countdown: 5,
           color: 'danger',
           message: e.message
         })
-        }
+      }
+    },
+    async removeListing () {
+      try {
+        this.remove.error = null
+        this.remove.loading = true
+        await removeListing(this.listing.id, this.remove.reason, this.$store.state.auth.type)
+        await this.$store.dispatch('marketplace/USER_LISTINGS')
+        this.remove.loading = false
+      } catch (e) {
+        this.removeLoading = false
+        this.remove.error = e.message
+        this.$root.$emit('alert', {
+          countdown: 5,
+          color: 'danger',
+          message: e.message
+        })
+      }
     }
   }
 }

@@ -1,2 +1,0 @@
-// Edit listing 
-// Remove listing 

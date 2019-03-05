@@ -160,13 +160,13 @@ export default {
   },
   methods: {
     async createListing () {
-      this.createLoading = true 
+      this.createLoading = true
       try {
         await createListing(this.create, this.$store.state.auth.type)
         await this.$store.dispatch('marketplace/USER_LISTINGS')
-        this.createLoading = false 
+        this.createLoading = false
       } catch (e) {
-        this.createLoading = false 
+        this.createLoading = false
         this.$root.$emit('alert', {
           countdown: 5,
           color: 'danger',

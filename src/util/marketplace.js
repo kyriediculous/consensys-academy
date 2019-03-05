@@ -20,7 +20,7 @@ export const buyListing = async (id, price, signer) => {
         await uport.onResponse('buyListing')
         break
       case 'metamask':
-        if (!window.ethereum) throw new Error("Metamask is not installed, please download metamask at https://metamask.io");
+        if (!window.ethereum) throw new Error('Metamask is not installed, please download metamask at https://metamask.io')
         await window.ethereum.enable()
         provider = new providers.Web3Provider(window.ethereum)
         const network = (await provider.getNetwork()).chainId
@@ -100,7 +100,7 @@ export const listingsFor = async (user) => {
     })
     logs = logs.map(l => event.decode(l.data, l.topics))
     logs = await Promise.all(logs.map(l => getListing(l.listing)))
-    return logs
+    return logs.filter(log => !log.manifestHash.startsWith('0x000000000'))
   } catch (e) {
     throw Error(e.message)
   }
@@ -118,7 +118,7 @@ export const getListing = async (id) => {
 
     let ethData = await marketplace.getListing(id)
     let meta
-    if (!ethData[0].startsWith('0x0000000000') ) {
+    if (!ethData[0].startsWith('0x0000000000')) {
       meta = await swarm.bzz.download(`${ethData[0].substring(2)}/meta`)
       meta = JSON.parse(await meta.text())
     } else {
@@ -226,7 +226,7 @@ export const changePricing = async (id, price, token, signer) => {
     switch (signer) {
       case 'uport':
         marketplace = uport.contract(Marketplace.abi).at(Marketplace.networks[uport.getProvider().network.id.substring(2)].address)
-        await marketplace.changeListingPrice(id, formatEther(price.toString()), token, 'changeListingPrice')
+        await marketplace.changeListingPrice(id, parseEther(price.toString()), token, 'changeListingPrice')
         await uport.onResponse('changeListingPrice')
         break
       case 'metamask':
@@ -237,7 +237,7 @@ export const changePricing = async (id, price, token, signer) => {
           Marketplace.abi,
           provider.getSigner()
         )
-        let tx = await marketplace.changeListingPrice(id, formatEther(price.toString()), token)
+        let tx = await marketplace.changeListingPrice(id, parseEther(price.toString()), token)
         await provider.waitForTransaction(tx.hash)
         break
     }
@@ -264,6 +264,33 @@ export const changeManifest = async (id, manifest, signer) => {
           provider.getSigner()
         )
         let tx = await marketplace.changeListingManifest(id, manifest)
+        await provider.waitForTransaction(tx.hash)
+        break
+    }
+  } catch (e) {
+    throw Error(e.message)
+  }
+}
+
+export const removeListing = async (id, reason, signer) => {
+  try {
+    let provider, marketplace
+    typeof reason === 'string' && reason.length > 1 ? reason = '0x' + await swarm.bzz.upload(reason) : reason = null
+    switch (signer) {
+      case 'uport':
+        marketplace = uport.contract(Marketplace.abi).at(Marketplace.networks[uport.getProvider().network.id.substring(2)].address)
+        await marketplace.removeListing(id, reason, 'removeListing')
+        await uport.onResponse('removeListing')
+        break
+      case 'metamask':
+        provider = new providers.Web3Provider(window.ethereum)
+        const network = (await provider.getNetwork()).chainId
+        marketplace = new Contract(
+          Marketplace.networks[network].address,
+          Marketplace.abi,
+          provider.getSigner()
+        )
+        let tx = await marketplace.removeListing(id, reason)
         await provider.waitForTransaction(tx.hash)
         break
     }

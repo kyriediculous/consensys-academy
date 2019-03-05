@@ -66,6 +66,8 @@ I didn't include this out of time constraints on the client side (Fulltime job a
 A listing owner can update the image, ebook or/and metadata of his listing by removing and adding resources to the existing listing manifest.
 This will return a new 32-byte keccak256 hash of the listing manifest, which can then be set on chain. 
 
+I did write a method for it and submitted an issue to the erebos.js swarm library for Swarm by the Mainframe team so they can add it to their API: https://github.com/MainframeHQ/erebos/issues/86
+
 ### Shopping Cart 
 We could create shopping cart functionality by utilizing batch transactions. 
 
