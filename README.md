@@ -176,6 +176,12 @@ This means there can be a few quirks here an there. For example, uploading alrea
 
 ## Project setup
 
+### Rinkeby 
+The contracts are already deployed to the Rinkeby testnet. 
+* [Marketplace.sol](https://rinkeby.etherscan.io/address/0x3A6eda57cd46b46671A7A868Ab30a3E5865d76A1)
+* [Staking.sol](https://rinkeby.etherscan.io/address/0x705d5F5221789d69F3BF32597245cdFfe4025541)
+* [Token.sol](https://rinkeby.etherscan.io/address/0x46F1A4Dd99bd8D2d6be032C328a54778e1517358)
+
 ###  Environment variables
 ENV Vars can be found in the `.env` file.
 If you wish to build for a specific network either on dev server or as a build make sure you change `VUE_APP_NETWORK` to the corresponding network as defined in `@/src/util/networks.js` as well as `VUE_APP_SWARM` to your gateway of choice.
