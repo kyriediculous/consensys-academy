@@ -53,7 +53,6 @@ export default {
           message: 'Succesfully staked 10 tokens'
         })
       } catch (e) {
-        console.log(e)
         this.loading = false
         this.$root.$emit('alert', {
           countdown: 5,

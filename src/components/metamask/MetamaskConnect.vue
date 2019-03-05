@@ -44,7 +44,6 @@ export default {
           color: 'danger',
           message: e.message
         })
-        console.log(e)
       }
     }
   }

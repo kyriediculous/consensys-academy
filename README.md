@@ -111,10 +111,29 @@ $ curl http://localhost:8500/bzz:/027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1
 
 In this application the [erebos.js](https://erebos.js.org) bzz-api is used to interact with Swarm.
 
+We can easily upload our `/dist` folder to Swarm recursively and set the default path to resolve at index.html: 
+
+`erebos bzz:upload ./dist --http-gateway https://swarm-gateways.net --default-path index.html`
 
 ## ENS
 
 The web application lives on the public swarm testnet and the content hash is registered on rinkeby ENS.
+
+https://manager.ens.domains/name/ethbooks.test
+
+After building and uploading our `/dist` folder to Swarm we get the manifest hash back.
+We can register this content hash on ENS. That way we can use the ENS name instead of manifest hash to resolve our application.
+
+For more please check https://swarm-guide.readthedocs.io/en/latest/gettingstarted.html#how-do-i-enable-ens-name-resolution 
+
+The public swarm gateway points to the Ethereum Main Net though, and we are using rinkeby. We will thus not be able to resolve the ENS Name of our content via the public swarm gateway. 
+
+It is possible though when running your own local Geth and Swarm nodes: 
+
+`geth --rinkeby   [...other options]`
+`swarm --ens-api test:<0x5d20cf83CB385e06D2F2A892F9322cd4933eAcDc>@/home/user/.ethereum/geth.ipc    [...other options]`
+
+We can then resolve by visting `http://localhost:8500/bzz:/ethbooks.test/`
 
 ## Uport: VuePort truffle box
 

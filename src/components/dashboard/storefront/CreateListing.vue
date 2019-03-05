@@ -194,7 +194,6 @@ export default {
         }
         this.tokenInfo.loading = false
       } catch (e) {
-        console.log(e)
         this.tokenInfo = {
           name: '',
           symbol: '',

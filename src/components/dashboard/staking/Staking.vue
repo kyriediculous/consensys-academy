@@ -62,10 +62,8 @@ export default {
 
       this.pageLoad = false
     } catch (e) {
-      console.log(e.message)
       this.pageLoad = false
       this.error = e.message
-      console.log(e)
 
       switch (e.message) {
         case 'contract not deployed':
