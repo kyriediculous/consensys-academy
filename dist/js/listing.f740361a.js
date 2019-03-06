@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["listing"],{c3e3:function(t,n,e){"use strict";e.r(n);var i=function(){var t=this,n=t.$createElement,e=t._self._c||n;return e("div",[t._v("\n  "+t._s(t.listing)+"\n")])},s=[],r={name:"listing",computed:{listing:function(){return this.$store.getters["marketplace/LISTING_DETAILS"](this.$route.params.id)}}},l=r,u=e("2877"),a=Object(u["a"])(l,i,s,!1,null,null,null);n["default"]=a.exports}}]);
+//# sourceMappingURL=listing.f740361a.js.map
