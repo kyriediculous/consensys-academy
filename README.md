@@ -86,7 +86,7 @@ There will be a a minimum majority of 2/3+1 , if no majority is reached a new ro
 If a seller is found guilty a portion of his stake will be slashed and distributed among the majority voters.
 Additionally, voters that voted against the 2/3rd+1 majority will also get slashed for a portion of their stake to be distributed among the correctly voting majority.
 
-## Swarm
+## Swarm (IPFS Replacement)
 
 > Swarm is a distributed storage platform and content distribution service, a native base layer service of the ethereum web3 stack. The primary objective of Swarm is to provide a sufficiently decentralized and redundant store of Ethereum’s public record, in particular to store and distribute dapp code and data as well as blockchain data. From an economic point of view, it allows participants to efficiently pool their storage and bandwidth resources in order to provide these services to all participants of the network, all while being incentivised by Ethereum.
 
@@ -109,29 +109,30 @@ We can download our uploaded text
 $ curl http://localhost:8500/bzz:/027e57bcbae76c4b6a1c5ce589be41232498f1af86e1b1a2fc2bdffd740e9b39/
 ```
 
-In this application the [erebos.js](https://erebos.js.org) bzz-api is used to interact with Swarm.
+In this application the [erebos.js](https://erebos.js.org) bzz-api is used to interact with Swarm at the public swarm testnet gateway (swarm-gateways.net)
 
-We can easily upload our `/dist` folder to Swarm recursively and set the default path to resolve at index.html: 
+We can easily upload our `/dist` folder to Swarm recursively and set the default path to resolve at index.html:
 
-`erebos bzz:upload ./dist --http-gateway https://swarm-gateways.net --default-path index.html`
+`swarm --defaultpath index.html --recursive up dist`
+
+The web application itself is deployed onto the swarm public testnet, visit it at https://swarm-gateways.net/bzz:/1cf86ccd15eb1ea2b6661e56cb1a843f99083a347a3541a1a403b88f1c514639/#/
 
 ## ENS
 
-The web application lives on the public swarm testnet and the content hash is registered on rinkeby ENS.
+The content hash for the web application is registered on rinkeby and ropsten ENS.
 
 https://manager.ens.domains/name/ethbooks.test
 
 After building and uploading our `/dist` folder to Swarm we get the manifest hash back.
 We can register this content hash on ENS. That way we can use the ENS name instead of manifest hash to resolve our application.
 
-For more please check https://swarm-guide.readthedocs.io/en/latest/gettingstarted.html#how-do-i-enable-ens-name-resolution 
+For more please check https://swarm-guide.readthedocs.io/en/latest/gettingstarted.html#how-do-i-enable-ens-name-resolution
 
-The public swarm gateway points to the Ethereum Main Net though, and we are using rinkeby. We will thus not be able to resolve the ENS Name of our content via the public swarm gateway. 
+The public swarm gateway points to the Ethereum Main Net though, and we are using rinkeby. We will thus not be able to resolve the ENS Name of our content via the public swarm gateway.
 
-It is possible though when running your own local Geth and Swarm nodes: 
+It is possible though when running your own swarm node connected to the testnet.
 
-`geth --rinkeby   [...other options]`
-`swarm --ens-api test:<0x5d20cf83CB385e06D2F2A892F9322cd4933eAcDc>@/home/user/.ethereum/geth.ipc    [...other options]`
+`swarm --bzzaccount $BZZACCOUNT --datadir $DATADIR --ens-api test:<0xe7410170f87102df0055eb195163a03b7f2bff4a>@https://rinkeby.infura.io`
 
 We can then resolve by visting `http://localhost:8500/bzz:/ethbooks.test/`
 
@@ -171,20 +172,25 @@ I switched back to my favorite ethereum libary, ethers.js, for the remainder of 
 
 I'm a big fan of the Swarm project as it forms a critical part of the decentralized infrastructure. Despite it's amazing potential it is still in proof-of-concept phase.
 This means there can be a few quirks here an there. For example, uploading already existing resources to the public swarm gateway will result in a CORS error currently, whereas in previous versions (eg 0.3.8) it returned the existing hash.
+Synchronization of chunks between nodes isn't always very performant either. After uploading the web application to my local swarm node I had to wait quite a while before it came available on the public gateway. 
 
 
 
 ## Project setup
 
-### Rinkeby 
-The contracts are already deployed to the Rinkeby testnet. 
+### Rinkeby
+The contracts are already deployed to the Rinkeby testnet.
 * [Marketplace.sol](https://rinkeby.etherscan.io/address/0x3A6eda57cd46b46671A7A868Ab30a3E5865d76A1)
 * [Staking.sol](https://rinkeby.etherscan.io/address/0x705d5F5221789d69F3BF32597245cdFfe4025541)
 * [Token.sol](https://rinkeby.etherscan.io/address/0x46F1A4Dd99bd8D2d6be032C328a54778e1517358)
 
+### Web Application
+Deployed on swarm testnet at https://swarm-gateways.net/bzz:/1cf86ccd15eb1ea2b6661e56cb1a843f99083a347a3541a1a403b88f1c514639/
+
 ###  Environment variables
 ENV Vars can be found in the `.env` file.
 If you wish to build for a specific network either on dev server or as a build make sure you change `VUE_APP_NETWORK` to the corresponding network as defined in `@/src/util/networks.js` as well as `VUE_APP_SWARM` to your gateway of choice.
+The app is configured to run against the swarm public gateway. If you want to play around it's advisable to set up a singleton swarm node (see swarm docs) and change the swarm host in the environment variables.
 
 You can also set `VUE_APP_DEFAULT_TOKEN` to the token used in the staking contract, it will then default to that token in the Create Listing form.
 
@@ -227,3 +233,5 @@ truffle networks --clean
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Running Locally

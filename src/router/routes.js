@@ -12,18 +12,6 @@ export default [
     ]
   },
   {
-    path: '/marketplace/:id',
-    component: () =>
-      import(/* webpackChunkName 'layout' */ '@/layouts/default.vue'),
-    children: [
-      {
-        path: '',
-        component: () =>
-          import(/* webpackChunkName: 'listing' */ '@/views/Listing.vue')
-      }
-    ]
-  },
-  {
     path: '/dashboard',
     component: () =>
       import(/* webpackChunkName 'layout' */ '@/layouts/default.vue'),
