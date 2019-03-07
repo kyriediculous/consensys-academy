@@ -1,5 +1,7 @@
 # EthBooks: ConsenSys Academy Project
 
+Go the the web app:  https://swarm-gateways.net/bzz:/1cf86ccd15eb1ea2b6661e56cb1a843f99083a347a3541a1a403b88f1c514639/#/
+
 ## EthBooks
 
 EthBooks is a very simple implementation of a decentralized marketplace. The idea is that self-publishing authors can sell their work to the public without having to go through expensive intermediaries such as amazon kindle, who charge 30% commission on royalties as well as employ a 60-day billing period.
@@ -172,7 +174,7 @@ I switched back to my favorite ethereum libary, ethers.js, for the remainder of 
 
 I'm a big fan of the Swarm project as it forms a critical part of the decentralized infrastructure. Despite it's amazing potential it is still in proof-of-concept phase.
 This means there can be a few quirks here an there. For example, uploading already existing resources to the public swarm gateway will result in a CORS error currently, whereas in previous versions (eg 0.3.8) it returned the existing hash.
-Synchronization of chunks between nodes isn't always very performant either. After uploading the web application to my local swarm node I had to wait quite a while before it came available on the public gateway. 
+Synchronization of chunks between nodes isn't always very performant either. After uploading the web application to my local swarm node I had to wait quite a while before it came available on the public gateway.
 
 
 
