@@ -1,6 +1,6 @@
 const HdwalletProvider = require('truffle-hdwallet-provider')
 const mnemonic =
- 'wild color card special lunar describe abstract project carpet cover end crew'
+ ''
 const rinkebyRpc =
  'https://rinkeby.infura.io/v3/42a353682886462f9f7b6b602f577a53'
 
@@ -23,7 +23,7 @@ module.exports = {
       network_id: '5777'
     },
     ethOps: {
-      provider: _ => new HdwalletProvider('lava kid panther inject erode hero intact siege student ensure install forest', 'http://localhost:8545'),
+      provider: _ => new HdwalletProvider('', 'http://localhost:8545'),
       gasPrice: '0',
       network_id: '6660001',
       gasLimit: 8000000
